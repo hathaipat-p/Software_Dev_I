@@ -1,7 +1,13 @@
+
+#####################################
+###  Name : Hathaipat Chumninoul  
+###  Student ID : 6201012620244                
+###  Date : 24/07/2020            
+#####################################
+
 import threading
 import time
 import pygame
-
 
 def mandelbrot(c, max_iters=10):
     i = 0
