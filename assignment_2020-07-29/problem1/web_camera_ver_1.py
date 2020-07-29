@@ -32,7 +32,6 @@ else:
 screen = pygame.display.set_mode((scr_w, scr_h))
 
 surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
-surface2 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
 img = None
 is_running = True 
