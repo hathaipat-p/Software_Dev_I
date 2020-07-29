@@ -1,6 +1,7 @@
 
 ###################################################################
 # Name : Hathaipat Chumninoul
+# Student ID : 6201012620244
 # File: pygame_camera_demo-1.py
 # Date: 2020-07-25
 ###################################################################
@@ -31,13 +32,12 @@ else:
 
 screen = pygame.display.set_mode((scr_w, scr_h))
 
-surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
 img = None
 is_running = True 
 
 rect_list = []
-draw_list = []
 black_draw_list = []
 black_rect_list = []
 
@@ -63,14 +63,14 @@ while is_running:
     # draw (MxN) tiles of the images
     for rect in rect_list:
         pygame.draw.rect( img, (0,255,0), rect, 1)
-        surface1.blit( img, rect, rect )   
+        surface.blit( img, rect, rect )   
 
     # draw black rect on the images
     for rect in black_rect_list:
         black = pygame.draw.rect( img, (0,0,0), rect , 1000)
         pygame.draw.rect( img, (0,255,0), rect, 1)
         black_draw_list.append(black)
-        surface1.blit( img, rect, rect)
+        surface.blit( img, rect, rect)
 
 
     #click to appear the image
@@ -92,7 +92,7 @@ while is_running:
 
     # write the surface to the screen and update the display
     
-    screen.blit( surface1, (0,0) )
+    screen.blit( surface, (0,0) )
     pygame.display.update()
 
 # close the camera
