@@ -40,7 +40,6 @@ is_running = True
 
 rect_list = []
 draw_list = []
-black_draw_list = []
 black_rect_list = []
 
 M,N = 10,8
@@ -53,6 +52,8 @@ for i in range(M):
         black_rect_list.append(rect)
 
 while is_running:
+    
+    black_draw_list = []
 
     img = camera.get_image()
     if img is None:
@@ -64,15 +65,15 @@ while is_running:
 
     # draw (MxN) tiles of the images
     for rect in rect_list:
-        pygame.draw.rect( img, (0,255,0), rect, 1)
         surface1.blit( img, rect, rect )   
 
     # draw black rect on the images
     for rect in black_rect_list:
         black = pygame.draw.rect( img, (0,0,0), rect , 0)
-        pygame.draw.rect( img, (0,255,0), rect, 1)
-        black_draw_list.append(black)
         surface1.blit( img, rect, rect)
+        pygame.draw.rect( img, (0,255,0), rect, 1)
+        surface1.blit( img, rect, rect)
+        black_draw_list.append(black)
 
 
     #click to appear the image
