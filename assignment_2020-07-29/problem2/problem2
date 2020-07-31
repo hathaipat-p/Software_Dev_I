@@ -61,7 +61,7 @@ while is_running:
     img_rect = img.get_rect()
     img_w, img_h = img_rect.w, img_rect.h
 
-    # วาดกรอบสีเขียวและภาพ
+    # สร้างกรอบสีเขียวและภาพ
     for i in range(len(rect_list)):
         pygame.draw.rect( img, (0,255,0), rect_list[i], 1)
         surface1.blit( img , rect_list[i], rect_img[i] ) 
