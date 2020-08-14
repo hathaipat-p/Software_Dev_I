@@ -1,0 +1,88 @@
+###################################################################
+# Name : Hathaipat Chumninoul
+# Student ID : 6201012620244
+# Boolean Expression Tree
+# infix to postfix
+###################################################################
+
+# สร้าง class Stack เพื่อดึงฟังก์ชั่นในคลาสไปใช้
+class Stack():
+    def __init__(self):
+        self.stack = []
+
+    def push(self,token):
+        self.stack.append(token)
+
+    def pop(self):
+        self.stack.pop()
+
+    def isEmpty(self):
+        if len(self.stack) == 0:
+            return True
+        else : False
+    
+    def peek(self):
+        return self.stack[-1]
+
+# สร้างคลาสแปลงจากสมการ infix เป็น postfix
+def infixToPostfix(infixexpression): #Ref https://runestone.academy/runestone/books/published/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html
+    prec = {}
+    prec["&"] = 3
+    prec["+"] = 3
+    prec["!"] = 2
+    prec["("] = 1
+    opStack = Stack()
+    postfixList = []
+    tokenList = infixexpression.split()
+
+    for token in tokenList:
+        if token in "I0I1I2I3I4I5I6I7I8I9I10" or token in '0123456789' :
+            postfixList.append(token)
+        elif token == '(':
+            opStack.push(token)
+        elif token == ')':
+            topToken = opStack.stack.pop()
+            while topToken != '(':
+                postfixList.append(topToken)
+                topToken = opStack.stack.pop()
+        elif token in '&+!':
+            opStack.push(token)
+        else: 
+            while (not opStack.isEmpty()) and (prec[opStack.peek()] >= prec[token]):
+                postfixList.append(opStack.stack.pop()) 
+            opStack.push(token)
+            
+    while not opStack.isEmpty():
+        postfixList.append(opStack.stack.pop())
+    return postfixList
+
+#คลาสสำหรับสร้างtree
+class tree() :               
+    
+    def __init__(self,infixexpression) :
+        self.data = infixToPostfix(infixexpression)
+        self.nodelist = []
+        self.nodetree = []
+
+        for i in range(len(self.data)):
+            self.nodelist.append(self.data[len(self.data)-i-1])
+
+        p = 0 
+        while True :                                #เป็นการวนเพื่อสร้างขนาดของtree เเบบ  complete ที่เหมาะสมกับจำนวนข้อมูล
+            if len(self.nodelist) <= (2**(i))-1 :      #เงื่อนว่าถ้าจำนวนของข้อมูลมีน้อยกว่าหรือเท่ากับขนาดของtreeให้ทำเงื่อนไขนี้ , (2**(i))-1 คือสมการหาขนาดของtree 
+                temp = 2**(i) - 1                   #temp คือตัวเเปรสำหรับเก็บค่าขนาดของtree
+                break                               #หยุดloop
+            else :
+                i += 1
+                pass
+        self.nodetree = ['None'] * temp           #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
+        
+# comming soon...
+
+
+exp1 = tree("! ( 1 + 0 )")
+exp2 = tree("! ( ! ( 0 + I0 & 1 ) )")
+exp3 = tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
+exp4 = tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
+exp5 = tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
+exp6 = tree("( I0 & I1 + ! ( I1 & I2 ) )")
