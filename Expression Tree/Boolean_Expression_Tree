@@ -2,7 +2,8 @@
 # Name : Hathaipat Chumninoul
 # Student ID : 6201012620244
 # Boolean Expression Tree
-# infix to postfix
+# infix to postfix (Stack)
+# tree demo version
 ###################################################################
 
 # สร้าง class Stack เพื่อดึงฟังก์ชั่นในคลาสไปใช้
@@ -66,12 +67,86 @@ def infixToPostfix(infixexpression): #Ref https://runestone.academy/runestone/bo
         postfixList.append(opStack.stack.pop())
     return postfixList
     
+    
+class Tree():
+    def __init__(self,infixexpression):
+        self.data = infixToPostfix(infixexpression)
+        self.nodedata = []
+        self.nodetree = []
+
+        for i in range(len(self.data)):
+            self.nodedata.append(self.data[len(self.data)-i-1])
+        
+        
+        while True :                                #เป็นการวนเพื่อสร้างขนาดของtree เเบบ  complete ที่เหมาะสมกับจำนวนข้อมูล
+            if len(self.nodedata) <= (2**(i))-1 :      #เงื่อนว่าถ้าจำนวนของข้อมูลมีน้อยกว่าหรือเท่ากับขนาดของtreeให้ทำเงื่อนไขนี้ , (2**(i))-1 คือสมการหาขนาดของtree 
+                temp = 2**(i) - 1                   #temp คือตัวเเปรสำหรับเก็บค่าขนาดของtree
+                break                               #หยุดloop
+            else :
+                i += 1
+        self.nodetree = ['None'] * temp           #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
+
+
+    def making(self) :                           #เป็นฟังก์ชั่นเพื่อนำข้อมูลมาจัดให้อยู่ในรูปเเบบtree
+        p = 0                                             # p แทนตำแหน่ง parent
+        for i in self.nodedata :       
+            print(i)
+            print(p)      
+            print('---------------')
+            self.left = (p * 2) + 1                        #สมการหาตำเเหน่งของnodeลูกฝั่งซ้ายจาก nodeพ่อเเม่
+            self.right = (p * 2) + 2                      #สมการหาตำเเหน่งของnodeลูกฝั่งขวาจาก nodeพ่อเเม่
+            '''
+            if i == '!' :                                # ถ้าเจอ !
+                if self.nodetree[self.left] == 'None' :      # ถ้าโหนดฝั่งซ้ายว่างให้ p = p_right และให้ตำแหน่ง p มีค่าเป็น !
+                    self.nodetree[p] = i
+                    p = self.left
+            '''
+            if i in 'I0I1I2I3I4I5I6II8I9I10' :                         #เป็นเงื่อนไขเพื่อบอกว่าถ้าเจอตัวเลขให้ใส่เข้าไปในnodeลูกจากตำเเหน่งที่เราสนใจ
+                if self.nodetree[self.left] == 'None' :      #เป็นเงื่อนไขเพื่อบอกว่าnodeลูกฝั่งซ้ายว่างหรือไม่ ถ้าว่างทำ if ถ้าไม่ทำ else
+                    self.nodetree[self.left] = i
+                elif self.nodetree[self.right] == 'None' : 
+                    self.nodetree[self.right] = i
+                else : self.nodetree[p+1] = i
+            elif i in '+&!' :
+                if self.nodetree[p] in '+&' :                  # ถ้าตน. p มี operator อยู่แล้ว ให้นำไปใส่ที่โหนดลูกแทน
+                    if self.nodetree[self.left] == 'None' :      
+                        self.nodetree[self.left] = i
+                        p = self.left
+                    else :
+                        self.nodetree[self.right] = i   
+                        p = self.right 
+
+                if i == '!' :                                # ถ้าเจอ !
+                    if self.nodetree[self.left] == 'None' :      # ถ้าโหนดฝั่งซ้ายว่างให้ p = p_right และให้ตำแหน่ง p มีค่าเป็น !
+                        self.nodetree[p] = i
+                        p = self.left
+
+                else :   
+                    self.nodetree[p] = i             # ถ้าตน. p ไม่มี operator ก็ให้ใส่ข้อมูลที่ตน. p ได้เลย
+                
+            for i in self.nodetree:                      # check ทุกตัวใน list tree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
+                if i in '+&':                               # ให้ p = ตน.ของ op ตัวนั้น
+                    par = self.nodetree.index(i)
+                    par_left = (par * 2) + 1
+                    par_right = (par * 2) + 2
+                    if self.nodetree[par_left] == None or self.nodetree[par_right] == None:
+                        p = par
+                        break
+               
+        return self.nodetree
+
+
+exp2 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )")
+data = exp2.nodedata
+make = exp2.making()
+
+
 # comming soon...
 
 
-exp1 = tree("! ( 1 + 0 )")
-exp2 = tree("! ( ! ( 0 + I0 & 1 ) )")
-exp3 = tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
-exp4 = tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
-exp5 = tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
-exp6 = tree("( I0 & I1 + ! ( I1 & I2 ) )")
+#exp1 = tree("! ( 1 + 0 )")
+#exp2 = tree("! ( ! ( 0 + I0 & 1 ) )")
+#exp3 = tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
+#exp4 = tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
+#exp5 = tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
+#exp6 = tree("( I0 & I1 + ! ( I1 & I2 ) )")
