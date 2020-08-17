@@ -1,9 +1,10 @@
 ###################################################################
 # Name : Hathaipat Chumninoul
 # Student ID : 6201012620244
-# Boolean Expression Tree
-# infix to postfix (Stack)
-# tree demo version
+# Boolean Expression Tree 
+# No Truth Table
+# create tree in index form
+# draw tree by using list
 ###################################################################
 
 # สร้าง class Stack เพื่อดึงฟังก์ชั่นในคลาสไปใช้
@@ -11,142 +12,267 @@ class Stack():
     def __init__(self):
         self.stack = []
 
-    def push(self,token):
+    def push(self,token):                   # ใส่ข้อมูลที่ตำแหน่งบนสุดใน stack
         self.stack.append(token)
 
-    def pop(self):
+    def pop(self):                          # ลบข้อมูลตัวบนสุดของ stack
+        self.stack.append(token)
         self.stack.pop()
 
-    def isEmpty(self):
+    def isEmpty(self):                      # check ว่า stack ว้างหรือไม่
         if len(self.stack) == 0:
             return True
         else : False
     
-    def peek(self):
+    def peek(self):                         # ดูข้อมูลตัวบนสุดของ stack
         return self.stack[-1]
 
 # สร้างคลาสแปลงจากสมการ infix เป็น postfix
 def infixToPostfix(infixexpression): #Ref https://runestone.academy/runestone/books/published/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html
-    prec = {}
+    prec = {}                   # สร้าง dict เพื่อเก็บค่าลำดับความสำคัญของตัวดำเนินการ
     prec["!"] = 3
     prec["&"] = 2
     prec["+"] = 2
     prec["("] = 1
-    opStack = Stack()
+    opStack = Stack()       # สร้าง stack เพื่อเก็บตัวดำเนินการ
     postfixList = []
-    tokenList = infixexpression.split()
-    print(tokenList)
-
+    tokenList = infixexpression.split()            # split เพื่อเก็บสมการ infix ในรูปแบบ list
+    
     for token in tokenList:
-        if token in "I0I1I2I3I4I5I6I7I8I9I10" or token in '0123456789' :
+        if token in "I0I1I2I3I4I5I6I7I8I9I10" :                 # ถ้าเป็นตัวแปรให้ใส่ใน postfix_list
             postfixList.append(token)
-            if not opStack.isEmpty():
-                if opStack.peek() == '!':
-                    toptoken = opStack.stack.pop()
-                    postfixList.append(toptoken)
+        elif token in '&!+':                                    # ถ้าเป็นตัวดำเนินการ
+            if not opStack.isEmpty() and prec[token] <= prec[opStack.peek()]:       # ถ้า stack ไม่ว่าง และตัวดำเนินการตัวบนสุดของ stack มีความสำคัญมากกว่า ตัวดำเนินการที่กำลังพิจารณา
+                postfixList.append(opStack.stack.pop())                         # ให้นำตัวดำเนินการบนสุดใน stack ออกมาใส่ใน postfix_list
+            opStack.push(token)                                               # และนำตัวดำเนินการที่กำลังพิจารณาใส่ใน postfix_list
         elif token == '(':
-            opStack.push(token)
+            opStack.push(token) 
         elif token == ')':
-            topToken = opStack.stack.pop()
-            while topToken != '(':
-                postfixList.append(topToken)
-                topToken = opStack.stack.pop()
-                if not opStack.isEmpty():
-                    if opStack.peek() == '!':
-                        toptoken = opStack.stack.pop()
-                        postfixList.append(toptoken)
-        elif token in '&+!':
-            opStack.push(token)
-        else: 
-            while (not opStack.isEmpty()) and (prec[opStack.peek()] >= prec[token]):
-                postfixList.append(opStack.stack.pop()) 
-            opStack.push(token)
-        print(opStack.stack)
-        print(postfixList)
-    while not opStack.isEmpty():
+            while (len(opStack.stack) != 0) and (opStack.peek() != "("):
+                postfixList.append(opStack.stack.pop())
+            opStack.stack.pop()
+
+    while not opStack.isEmpty():                        # เมื่อพิจารณาครบทุกตัวในสมการแล้ว ถ้ายังเหลือตัวดำเนินการอยู่ใน stack อยู่ให้นำมาใส่ใน postfix_list
         postfixList.append(opStack.stack.pop())
+    
+    print('infix : ',infixexpression)
+    print('postfix : ', postfixList)
+
     return postfixList
-    
-    
+
+
 class Tree():
     def __init__(self,infixexpression):
         self.data = infixToPostfix(infixexpression)
         self.nodedata = []
         self.nodetree = []
 
+        # สมการ postfix จะมาในรูปเลขต่อด้วยตัวดำเนินการ
+        # ขั้นตอนนี้ทำเพื่อให้ตัวดำเนินการมาอยู่ข้างหน้า หรือเป็นการ reverse สมการ postfix เพื่อนำไปสร้าง tree ต่อไป
         for i in range(len(self.data)):
-            self.nodedata.append(self.data[len(self.data)-i-1])
+            self.nodedata.append(self.data[len(self.data)-i-1]) 
         
-        
-        while True :                                #เป็นการวนเพื่อสร้างขนาดของtree เเบบ  complete ที่เหมาะสมกับจำนวนข้อมูล
-            if len(self.nodedata) <= (2**(i))-1 :      #เงื่อนว่าถ้าจำนวนของข้อมูลมีน้อยกว่าหรือเท่ากับขนาดของtreeให้ทำเงื่อนไขนี้ , (2**(i))-1 คือสมการหาขนาดของtree 
-                temp = 2**(i) - 1                   #temp คือตัวเเปรสำหรับเก็บค่าขนาดของtree
-                break                               #หยุดloop
-            else :
+        i=0
+        while True :                                  # เป็นการวนเพื่อสร้างขนาดของtree เเบบ  complete ที่เหมาะสมกับจำนวนข้อมูล
+            if len(self.nodedata) <= (2**(i))-1 :      # (2**(i))-1 คือสมการหาขนาดของ tree 
+                temp = 2**(i) - 1                    # temp คือตัวเเปรสำหรับเก็บค่าขนาดของtree
+                break                                               
+            else : 
                 i += 1
-        self.nodetree = ['None'] * temp           #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
+        self.nodetree = ['None'] * temp                   #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ complete tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
 
 
-    def making(self) :                           #เป็นฟังก์ชั่นเพื่อนำข้อมูลมาจัดให้อยู่ในรูปเเบบtree
+    def making(self) :                           # เป็นฟังก์ชั่นเพื่อนำข้อมูลมาจัดให้อยู่ในรูปเเบบtree
         p = 0                                             # p แทนตำแหน่ง parent
         for i in self.nodedata :       
-            print(i)
-            print(p)      
-            print('---------------')
-            self.left = (p * 2) + 1                        #สมการหาตำเเหน่งของnodeลูกฝั่งซ้ายจาก nodeพ่อเเม่
-            self.right = (p * 2) + 2                      #สมการหาตำเเหน่งของnodeลูกฝั่งขวาจาก nodeพ่อเเม่
-            '''
-            if i == '!' :                                # ถ้าเจอ !
-                if self.nodetree[self.left] == 'None' :      # ถ้าโหนดฝั่งซ้ายว่างให้ p = p_right และให้ตำแหน่ง p มีค่าเป็น !
-                    self.nodetree[p] = i
-                    p = self.left
-            '''
-            if i in 'I0I1I2I3I4I5I6II8I9I10' :                         #เป็นเงื่อนไขเพื่อบอกว่าถ้าเจอตัวเลขให้ใส่เข้าไปในnodeลูกจากตำเเหน่งที่เราสนใจ
-                if self.nodetree[self.left] == 'None' :      #เป็นเงื่อนไขเพื่อบอกว่าnodeลูกฝั่งซ้ายว่างหรือไม่ ถ้าว่างทำ if ถ้าไม่ทำ else
+            self.left = (p * 2) + 1                        # สมการหาตำเเหน่งของ node ลูกฝั่งซ้ายจาก node พ่อเเม่
+            self.right = (p * 2) + 2                      # สมการหาตำเเหน่งของ node ลูกฝั่งขวาจาก node พ่อเเม่  
+
+            if i in 'I0I1I2I3I4I5I6II8I9I10' :                         #เป็นเงื่อนไขเพื่อบอกว่าถ้าเจอตัวเลขให้ใส่เข้าไปใน node ลูกจากตำเเหน่งที่เราสนใจ
+                if self.nodetree[self.left] == 'None' :      #เป็นเงื่อนไขเพื่อบอกว่าnodeลูกฝั่งซ้ายว่างหรือไม่ 
                     self.nodetree[self.left] = i
                 elif self.nodetree[self.right] == 'None' : 
                     self.nodetree[self.right] = i
-                else : self.nodetree[p+1] = i
+
             elif i in '+&!' :
-                if self.nodetree[p] in '+&' :                  # ถ้าตน. p มี operator อยู่แล้ว ให้นำไปใส่ที่โหนดลูกแทน
-                    if self.nodetree[self.left] == 'None' :      
+                if self.nodetree[p] == 'None' :      # ถ้าเจอตัวดำเนินการและ node parent ยังไม่มีค่าให้ใส่ค่าไปตน.นั้น
+                    self.nodetree[p] = i             
+
+                # ถ้า node parent นั้นมีค่าแล้ว ลูกทางซ้ายและขวาก็ไม่ว่าง    
+                elif self.nodetree[p] != 'None' and self.nodetree[self.left] != 'None' and self.nodetree[self.right] != 'None' :
+                    for k in self.nodetree:                      # check ทุกตัวใน list nodetree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
+                        if k in '+&':                              # ยกเว้นตัว ! เพราะต้องมีโหนดลูกแค่โหนดเดียว
+                            par = self.nodetree.index(k)        # ตัวดำเนินการตัวไหนยังไม่ลูกไม่ครบ ให้กำหนดให้ลูกทางขวาของโหนดนั้นมีค่าเป็นตัวที่กำลังพิจารณา และเป็น node parent ต่อไป
+                            self.left = (par * 2) + 1             
+                            self.right = (par * 2) + 2
+                            p = self.right
+                            self.nodetree[p] = i
+                            break
+                    
+
+                elif self.nodetree[p] != 'None':                            # ถ้าที่ตำแหน่ง parant มีค่าอยู่
+                    if self.nodetree[self.left] == 'None' :                 # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent
                         self.nodetree[self.left] = i
                         p = self.left
-                    else :
+                    elif self.nodetree[self.right] == 'None' :              # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent 
                         self.nodetree[self.right] = i   
                         p = self.right 
-
-                if i == '!' :                                # ถ้าเจอ !
-                    if self.nodetree[self.left] == 'None' :      # ถ้าโหนดฝั่งซ้ายว่างให้ p = p_right และให้ตำแหน่ง p มีค่าเป็น !
-                        self.nodetree[p] = i
-                        p = self.left
-
-                else :   
-                    self.nodetree[p] = i             # ถ้าตน. p ไม่มี operator ก็ให้ใส่ข้อมูลที่ตน. p ได้เลย
-                
-            for i in self.nodetree:                      # check ทุกตัวใน list tree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
-                if i in '+&':                               # ให้ p = ตน.ของ op ตัวนั้น
-                    par = self.nodetree.index(i)
-                    par_left = (par * 2) + 1
-                    par_right = (par * 2) + 2
-                    if self.nodetree[par_left] == None or self.nodetree[par_right] == None:
-                        p = par
-                        break
-               
+        print('index tree :' , self.nodetree)
         return self.nodetree
 
+#######################################################
+#######################################################
+#-------------------Test------------------------------#
 
+#print(infixToPostfix("! ( I0 & I1 ) + ! ( I1 + I2 )"))
 exp2 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )")
+#print(infixToPostfix("! ( 1 + 0 )"))
+#exp1 = Tree("! ( 1 + 0 )")
 data = exp2.nodedata
-make = exp2.making()
+#print(data)
+make_node = exp2.making()
+#print(make_node)
+
+#######################################################
+#######################################################
+
+#######################################################
+#######################################################
+#-------------------Pygame----------------------------#
+
+import pygame
+import pygame.image
+
+pygame.init()
+pygame.font.init()
+
+scr_w , scr_h = 1000,500
+screen = pygame.display.set_mode((scr_w,scr_h))
+surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+pygame.display.set_caption('Expression Tree')
+text_font = pygame.font.SysFont('FreesiaUPC', 40)
+
+white = 255,255,255
+black = 0,0,0
+orange = 255,204,153
+
+def create_text(text,x,y):                                          # สร้างตัวอักษร
+    text_surface = text_font.render( text, False, black )
+    text_rect = text_surface.get_rect()
+    text_rect.center = ( x,y )
+    surface.blit( text_surface , text_rect )
+    #text_rect = [x,y,text_w,text_h]
+    return 0
 
 
-# comming soon...
+def get_height(tree):           # หาความสูง tree
+    tree.reverse()              # ใช้วิธี reverse list nodetree เพื่อหาว่าตัวสุดท้ายอยู่ที่ตำแหน่งใด
+    item = ''                   
+    for i in tree:
+        if i == 'None':
+            pass
+        else :
+            item = i
+            break
+    last_n = len(tree) - tree.index(i) 
+    print('last_node is in index :',last_n)
+
+    h = 0
+    while True:                             # จากสมการหาขนาดของ tree (2**(i))-1 เมื่อ i คือ ความสูงของต้นไม้
+        if last_n <= (2**h)-1:              # ดูว่า node ตำแน่งสุดท้ายอยู่ที่ต้นไม้ชั้นใด ให้นับว่าชั้นนั้นคือชั้นสุดท้ายของต้นไม้ 
+            break
+        else : 
+            h += 1
+    print('height of tree is : ', h)
+    tree.reverse()                          # reverse list nodetree เพื่อให้กลับเป็นเหมือนเดิม
+    return h
+
+height = get_height(make_node)
+
+# ชั้นตอนการสร้าง list ของความกว้งาและความสูง
+w_list = []
+h_list = []
+h = 50                          # ตั้ง defult ความสูงเป็น 50
+w_list.append(scr_w // 2)       # ให้ตำแหน่งของรากเป็น ครึ่งหนึ่งของความกว้างภาพ และ ความสูงเป็น defult 
+h_list.append(h)
+
+# ขั้นตอนการแบ่งส่วนของความกว้าง และการเพิ่มความสูง
+for n in range(1,height):                       # วนลูปในแต่ละชั้น
+    part = 2**n +1                              # part คือส่วนของการแบ่งความกว้าง โดยเริ่มจากชั้นที่ 2 เพราะชั้นแรกเรากำหนดไว้แล้ว
+                                                # เช่น ในชั้นที่ 2 (n=1) ต้องการ 2 เส้นกลางที่แบ่งกัน ฉะนั้นจะต้องแบ่งได้ 3 ช่อง part = 3
+    w_diff = scr_w // part                      # w_diff คือบอกว่าแต่ละช่องนั้นกว้างเท่าไหร่
+    h += 50                                     
+    for i in range(1,part):                     # วนตามจำนวนเส้นแบ่งของชั้นนั้น
+        w = w_diff * i                          # เส้นกลางแต่ละเส้นคือตำแหน่งของ node ในแต่ละชั้น
+        w_list.append(w)
+        h_list.append(h)
+
+print('list of widht : ' , w_list)
+print('list of height : ' , h_list)
+
+class Node():                          
+    def __init__(self,value,x,y):
+        self.value = value
+        self.r = 20
+        self.x = x
+        self.y = y
+        self.draw = pygame.draw.circle(surface, orange, (self.x,self.y), self.r ,0)
+        self.text = create_text(self.value, self.x, self.y)
+
+# ฟังก์ชั่นวาดต้นไม้
+def draw_tree(nodetree):
+    for i in range(len(nodetree)):          
+        if nodetree[i] != 'None':                                   # ถ้าโหนดไหนเป็น None ข้ามไปเลยไม่ต้องวาด
+            node = Node(nodetree[i],w_list[i],h_list[i])            # node ไหนมีค่า ให้วาดโดยโยงตำแหน่งของ node กับตำแหน่งของพิกัด โดยใช้ index
+
+def draw_line(nodetree):
+    for i in range(len(nodetree)) :      
+        if nodetree[i] in '+&!':                # พิจารณา node ตัวดำเนินการ ถ้ามีลูกทางซ้ายก็ให้วาดเส้นไปหา ถ้ามีลูกทางขวาก็วาดเส้นไปหา เชื่อมโยงโดยใช้ index
+            left = (i * 2) + 1                        
+            right = (i * 2) + 2
+            if nodetree[left] != 'None':
+                pygame.draw.line(surface, orange, (w_list[i],h_list[i]) , (w_list[left],h_list[left]), 5)
+                if nodetree[right] != 'None':
+                    pygame.draw.line(surface, orange, (w_list[i],h_list[i]) , (w_list[right],h_list[right]), 5)
+
+running = True
+
+while running:
+
+    screen.fill(white)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    draw_line(make_node)        
+    draw_tree(make_node)
+    
+    screen.blit(surface,(0,0))
+    pygame.display.update()
+
+pygame.image.save( screen, 'image.jpg' )
+
+print('...Exit...')
+
+pygame.quit()
 
 
-#exp1 = tree("! ( 1 + 0 )")
-#exp2 = tree("! ( ! ( 0 + I0 & 1 ) )")
-#exp3 = tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
-#exp4 = tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
-#exp5 = tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
-#exp6 = tree("( I0 & I1 + ! ( I1 & I2 ) )")
+# truth table comming soon...
+
+# output #
+# infix :  ! ( I0 & I1 ) + ! ( I1 + I2 )
+# postfix :  ['I0', 'I1', '&', '!', 'I1', 'I2', '+', '!', '+']
+# index tree : ['+', '!', '!', '+', 'None', '&', 'None', 'I2', 'I1', 'None', 'None', 'I1', 'I0', 'None', 'None']
+# last_node is in index : 13
+# height of tree is :  4
+# list of widht :  [500, 333, 666, 200, 400, 600, 800, 111, 222, 333, 444, 555, 666, 777, 888]
+# list of height :  [50, 100, 100, 150, 150, 150, 150, 200, 200, 200, 200, 200, 200, 200, 200]
+# ...Exit...
+
+#exp1 = Tree("! ( 1 + 0 )")
+#exp2 = Tree("! ( ! ( 0 + I0 & 1 ) )")
+#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
+#exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
+#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
+#exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )")
