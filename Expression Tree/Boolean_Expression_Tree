@@ -124,8 +124,19 @@ class Tree():
 #######################################################
 #-------------------Test------------------------------#
 
-exp2 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )")
-make_node = exp2.making()
+#exp1 = Tree("! ( 1 + 0 )")
+#exp2 = Tree("! ( ! ( 0 + I0 & 1 ) )")
+#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )") # ยังมีปัญหา
+exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
+#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )") # ยังมีปัญหา
+#exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )")
+
+#make_node = exp1.making()
+#make_node = exp2.making()
+#make_node = exp3.making()
+make_node = exp4.making()
+#make_node = exp5.making()
+#make_node = exp6.making()
 
 #######################################################
 #######################################################
@@ -263,7 +274,7 @@ pygame.quit()
 
 #exp1 = Tree("! ( 1 + 0 )")
 #exp2 = Tree("! ( ! ( 0 + I0 & 1 ) )")
-#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
+#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")  # ยังมีปัญหา
 #exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
-#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")
+#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")  # ยังมีปัญหา
 #exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )")
