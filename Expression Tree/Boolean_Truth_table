@@ -3,7 +3,7 @@
 # Student ID : 6201012620244
 # Boolean Expression Tree 
 # create tree in index form
-# Truth Table
+# Truth Table from postfix
 ###################################################################
 
 # สร้าง class Stack เพื่อดึงฟังก์ชั่นในคลาสไปใช้
