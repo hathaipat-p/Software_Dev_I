@@ -79,8 +79,8 @@ class Tree():
                 break                                               
             else : 
                 i += 1
-        self.nodetree = ['None'] * temp                   #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ complete tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
-
+        #self.nodetree = ['None'] * temp                   #สร้างตัวเเปรสำหรับเก็บค่า list ที่มีสมาชิกเท่ากับ complete tree เเละเเต่ละตัวเป็น string None เพื่อบอกว่าคือ tree เปล่า
+        self.nodetree = ['None'] * 500
 
     def making(self) :                           # เป็นฟังก์ชั่นเพื่อนำข้อมูลมาจัดให้อยู่ในรูปเเบบtree
         p = 0                                             # p แทนตำแหน่ง parent
@@ -89,17 +89,49 @@ class Tree():
             self.right = (p * 2) + 2                      # สมการหาตำเเหน่งของ node ลูกฝั่งขวาจาก node พ่อเเม่  
 
             if i in 'I0I1I2I3I4I5I6II8I9I10' :                         #เป็นเงื่อนไขเพื่อบอกว่าถ้าเจอตัวเลขให้ใส่เข้าไปใน node ลูกจากตำเเหน่งที่เราสนใจ
-                if self.nodetree[self.left] == 'None' :      #เป็นเงื่อนไขเพื่อบอกว่าnodeลูกฝั่งซ้ายว่างหรือไม่ 
+                if self.nodetree[p] in '+&':
+                    if self.nodetree[self.left] == 'None' :      #เป็นเงื่อนไขเพื่อบอกว่าnodeลูกฝั่งซ้ายว่างหรือไม่ 
+                        self.nodetree[self.left] = i
+                    elif self.nodetree[self.right] == 'None' : 
+                        self.nodetree[self.right] = i
+                    
+                elif self.nodetree[p] == '!' and self.nodetree[self.left] == 'None' :
                     self.nodetree[self.left] = i
-                elif self.nodetree[self.right] == 'None' : 
-                    self.nodetree[self.right] = i
+                    
+                else :
+                    for k in range( len(self.nodetree)-1 , -1 , -1 ):                      # check ทุกตัวใน list nodetree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
+                        if self.nodetree[k] in '+&':                              # ยกเว้นตัว ! เพราะต้องมีโหนดลูกแค่โหนดเดียว
+                            par = k                             # ตัวดำเนินการตัวไหนยังไม่ลูกไม่ครบ ให้กำหนดให้ลูกทางขวาของโหนดนั้นมีค่าเป็นตัวที่กำลังพิจารณา และเป็น node parent ต่อไป
+                            self.left = (par * 2) + 1             
+                            self.right = (par * 2) + 2
+                            if self.nodetree[self.right] == 'None':
+                                p = self.right
+                                self.nodetree[p] = i
+                                break
+                        
 
             elif i in '+&!' :
+            
                 if self.nodetree[p] == 'None' :      # ถ้าเจอตัวดำเนินการและ node parent ยังไม่มีค่าให้ใส่ค่าไปตน.นั้น
-                    self.nodetree[p] = i             
+                    self.nodetree[p] = i        
 
-                # ถ้า node parent นั้นมีค่าแล้ว ลูกทางซ้ายและขวาก็ไม่ว่าง    
-                elif self.nodetree[p] != 'None' and self.nodetree[self.left] != 'None' and self.nodetree[self.right] != 'None' :
+                #elif self.nodetree[p] != 'None' :                            # ถ้าที่ตำแหน่ง parant มีค่าอยู่
+                #    print('222222,33333,666666')
+
+                elif self.nodetree[p] == '!' and self.nodetree[self.left] == 'None' :                 # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent
+                    self.nodetree[self.left] = i
+                    p = self.left
+
+                elif self.nodetree[p] != '!' and self.nodetree[self.left] == 'None':
+                    self.nodetree[self.left] = i
+                    p = self.left
+
+                elif self.nodetree[p] != '!' and self.nodetree[self.right] == 'None' :              # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent 
+                    self.nodetree[self.right] = i   
+                    p = self.right 
+                    
+                # ถ้า node parent นั้นมีค่าเป็น +,& ลูกทางซ้ายและขวาก็ไม่ว่าง    
+                elif self.nodetree[p] in '+&' and self.nodetree[self.left] != 'None' and self.nodetree[self.right] != 'None' :
                     for k in self.nodetree:                      # check ทุกตัวใน list nodetree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
                         if k in '+&':                              # ยกเว้นตัว ! เพราะต้องมีโหนดลูกแค่โหนดเดียว
                             par = self.nodetree.index(k)        # ตัวดำเนินการตัวไหนยังไม่ลูกไม่ครบ ให้กำหนดให้ลูกทางขวาของโหนดนั้นมีค่าเป็นตัวที่กำลังพิจารณา และเป็น node parent ต่อไป
@@ -108,16 +140,18 @@ class Tree():
                             p = self.right
                             self.nodetree[p] = i
                             break
-                    
-
-                elif self.nodetree[p] != 'None':                            # ถ้าที่ตำแหน่ง parant มีค่าอยู่
-                    if self.nodetree[self.left] == 'None' :                 # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent
-                        self.nodetree[self.left] = i
-                        p = self.left
-                    elif self.nodetree[self.right] == 'None' :              # ถ้าลูกทางฝั่งซ้ายว่าง ใส่ค่าลงไปและให้ลูกทางฝั่งซ้ายเป็น parent 
-                        self.nodetree[self.right] = i   
-                        p = self.right 
-        print('index tree :' , self.nodetree)
+                                   
+                # ถ้า node parent นั้นมีค่าเป็น ! ลูกทางซ้ายไม่ว่าง
+                elif self.nodetree[p] == '!' and self.nodetree[self.left] != 'None' :
+                    for k in range( len(self.nodetree)-1 , -1 , -1 ):                      # check ทุกตัวใน list nodetree ว่ามีตัวไหนที่เป็น operator แต่ไม่มีลูกครบทัังสองฝั่ง
+                        if self.nodetree[k] in '+&':                              # ยกเว้นตัว ! เพราะต้องมีโหนดลูกแค่โหนดเดียว
+                            par = k                             # ตัวดำเนินการตัวไหนยังไม่ลูกไม่ครบ ให้กำหนดให้ลูกทางขวาของโหนดนั้นมีค่าเป็นตัวที่กำลังพิจารณา และเป็น node parent ต่อไป
+                            self.left = (par * 2) + 1             
+                            self.right = (par * 2) + 2
+                            if self.nodetree[self.right] == 'None':
+                                p = self.right
+                                self.nodetree[p] = i
+                                break
         return self.nodetree
 
 #######################################################
@@ -126,10 +160,10 @@ class Tree():
 
 #exp1 = Tree("! ( 1 + 0 )")
 #exp2 = Tree("! ( ! ( 0 + I0 & 1 ) )")
-#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )") # ยังมีปัญหา
-exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
-#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )") # ยังมีปัญหา
-#exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )")
+#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")
+exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )")  
+#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )") 
+#exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )") 
 
 #make_node = exp1.making()
 #make_node = exp2.making()
@@ -137,6 +171,9 @@ exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )")
 make_node = exp4.making()
 #make_node = exp5.making()
 #make_node = exp6.making()
+
+#######################################################
+#######################################################
 
 #######################################################
 #######################################################
@@ -152,7 +189,7 @@ scr_w , scr_h = 1000,500
 screen = pygame.display.set_mode((scr_w,scr_h))
 surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 pygame.display.set_caption('Expression Tree')
-text_font = pygame.font.SysFont('FreesiaUPC', 40)
+text_font = pygame.font.SysFont('FreesiaUPC', 20)
 
 white = 255,255,255
 black = 0,0,0
@@ -209,13 +246,13 @@ for n in range(1,height):                       # วนลูปในแต่
         w_list.append(w)
         h_list.append(h)
 
-print('list of widht : ' , w_list)
-print('list of height : ' , h_list)
+#rint('list of widht : ' , w_list)
+#print('list of height : ' , h_list)
 
 class Node():                          
     def __init__(self,value,x,y):
         self.value = value
-        self.r = 20
+        self.r = 15
         self.x = x
         self.y = y
         self.draw = pygame.draw.circle(surface, orange, (self.x,self.y), self.r ,0)
@@ -247,6 +284,19 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    infix = 'Infix : ! ( I0 & I1 ) + ! ( I1 + I2 )'
+    postfix =  'Postfix : I0 I1 & ! I1 I2 + ! +'
+
+    text1 = text_font.render( infix, False, black )
+    text_rect1 = text1.get_rect()
+    text_rect1.midleft = ( 20,20 )
+    surface.blit( text1 , text_rect1 )
+
+    text2 = text_font.render( postfix, False, black )
+    text_rect2 = text2.get_rect()
+    text_rect2.midleft = ( 20,40 )
+    surface.blit( text2 , text_rect2 )
+
     draw_line(make_node)        
     draw_tree(make_node)
     
@@ -259,22 +309,9 @@ print('...Exit...')
 
 pygame.quit()
 
-
-# truth table comming soon...
-
 # output #
 # infix :  ! ( I0 & I1 ) + ! ( I1 + I2 )
 # postfix :  ['I0', 'I1', '&', '!', 'I1', 'I2', '+', '!', '+']
-# index tree : ['+', '!', '!', '+', 'None', '&', 'None', 'I2', 'I1', 'None', 'None', 'I1', 'I0', 'None', 'None']
-# last_node is in index : 13
-# height of tree is :  4
-# list of widht :  [500, 333, 666, 200, 400, 600, 800, 111, 222, 333, 444, 555, 666, 777, 888]
-# list of height :  [50, 100, 100, 150, 150, 150, 150, 200, 200, 200, 200, 200, 200, 200, 200]
-# ...Exit...
 
-#exp1 = Tree("! ( 1 + 0 )")
-#exp2 = Tree("! ( ! ( 0 + I0 & 1 ) )")
-#exp3 = Tree("( I0 + ! I1 + ! ( I2 ) ) & ( ! I0 + I1 + I2 )")  # ยังมีปัญหา
-#exp4 = Tree("! ( I0 & I1 ) + ! ( I1 + I2 )") 
-#exp5 = Tree("( ( ( I0 & I1 & ! I2 ) + ! I1 ) + I3 )")  # ยังมีปัญหา
-#exp6 = Tree("( I0 & I1 + ! ( I1 & I2 ) )")
+# Truth Table is comming
+
