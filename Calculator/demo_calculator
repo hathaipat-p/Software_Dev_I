@@ -1,0 +1,199 @@
+
+###################################################################
+# Name : Hathaipat Chumninoul
+# Student ID : 6201012620244
+# Basic Calculator
+# GUI
+# Delete and clear text
+###################################################################
+
+import pygame
+import sys
+
+black = 0,0,0
+white = 255,255,255
+green = 0,250,0
+gray = 224,224,224
+dark_gray = 128,128,128
+red = 250,0,0
+dark_red = 204,0,0
+orange = 245,165,61
+
+pygame.init()
+pygame.font.init()
+
+scr_w , scr_h = 450,370
+screen = pygame.display.set_mode( (scr_w,scr_h) )
+pygame.display.set_caption('Calculator')
+
+text_font = pygame.font.SysFont('FreesiaUPC', 40)
+
+def create_text(text,x,y):
+    text_surface = text_font.render( text, False, black )
+    text_rect = text_surface.get_rect()
+    text_rect.center = ( x,y )
+    screen.blit( text_surface , text_rect )
+    #text_rect = [x,y,text_w,text_h]
+    #print(text_rect[:2])
+    return 0
+
+def text_show(text):
+    text_surface = text_font.render( text, False, black )
+    text_rect = text_surface.get_rect()
+    text_rect.midright = ( 430,40 )
+    screen.blit( text_surface , text_rect )
+    return 0
+
+def calculate(num1,num2,op):
+    if op == '+':
+        return num1 + num2
+    if op == '-':
+        return num1 - num2
+    if op == '*':
+        return num1 * num2
+    if op == '/':
+        return num1 / num2
+
+def draw_rect(color,rect):
+    pygame.draw.rect(screen, color , rect)
+
+input_list = []
+
+def input_text(value):
+    draw_rect(gray , (10,10,430,50))
+    if value == 'clear':
+        input_list.clear()
+    elif value == 'del':
+        input_list.pop()
+    else:
+        input_list.append(value)
+    text = ''
+    for i in input_list:
+        text += i 
+    text_show(text)
+
+
+############################### GUI ######################################
+text_field = pygame.draw.rect(screen, gray , (10,10,430,50))
+
+#first row
+clear_botton = pygame.draw.rect(screen, red , (10,70,100,50))
+clear_text = create_text('Clear',60,95)
+
+del_botton = pygame.draw.rect(screen, orange , (120,70,100,50))
+del_text = create_text('Del',170,95)
+
+convert_botton = pygame.draw.rect(screen, gray , (230,70,100,50))
+convert_text = create_text('+/-',280,95)
+
+divide_botton = pygame.draw.rect(screen, gray , (340,70,100,50))
+divide_text = create_text('÷',390,95)
+
+#second row
+num_7 = pygame.draw.rect(screen, gray , (10,130,100,50))
+seven_text = create_text('7',60,155)
+
+num_8 = pygame.draw.rect(screen, gray , (120,130,100,50))
+eigth_text = create_text('8',170,155)
+
+num_9 = pygame.draw.rect(screen, gray , (230,130,100,50))
+nine_text = create_text('9',280,155)
+
+multiply_botton = pygame.draw.rect(screen, gray , (340,130,100,50))
+multiply_text = create_text('x',390,155)
+
+#third row
+num_4 = pygame.draw.rect(screen, gray , (10,190,100,50))
+four_text = create_text('4',60,215)
+
+num_5 = pygame.draw.rect(screen, gray , (120,190,100,50))
+five_text = create_text('5',170,215)
+
+num_6 = pygame.draw.rect(screen, gray , (230,190,100,50))
+six_text = create_text('6',280,215)
+
+minus_botton = pygame.draw.rect(screen, gray , (340,190,100,50))
+minus_text = create_text('-',390,215)
+
+#forth row
+num_1 = pygame.draw.rect(screen, gray , (10,250,100,50))
+one_text = create_text('1',60,275)
+
+num_2 = pygame.draw.rect(screen, gray , (120,250,100,50))
+two_text = create_text('2',170,275)
+
+num_3 = pygame.draw.rect(screen, gray , (230,250,100,50))
+three_text = create_text('3',280,275)
+
+plus_botton = pygame.draw.rect(screen, gray , (340,250,100,50))
+plus_text = create_text('+',390,275)
+
+#fifth row
+num_0 = pygame.draw.rect(screen, gray , (10,310,210,50))
+zero_text = create_text('0',115,335)
+
+dot_botton = pygame.draw.rect(screen, gray , (230,310,100,50))
+dot_text = create_text('.',280,335)
+
+equal_botton = pygame.draw.rect(screen, gray , (340,310,100,50))
+equal_text = create_text('=',390,335)
+#####################################################################
+
+running = True
+
+while running :
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            sys.exit()      
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+            if 10 < mouse[0] < 110 and 70 < mouse[1] < 120:
+                draw_rect(gray , (10,10,430,50))
+            
+            if 10 < mouse[0] < 220 and 320 < mouse[1] < 370:
+                input_text('0')   
+            
+            if 10 < mouse[0] < 110 and 260 < mouse[1] < 310:
+                input_text('1')    
+
+            if 120 < mouse[0] < 220 and 260 < mouse[1] < 310:
+                input_text('2') 
+
+            if 230 < mouse[0] < 330 and 260 < mouse[1] < 310:
+                input_text('3')   
+
+            if 10 < mouse[0] < 110 and 200 < mouse[1] < 250:
+                input_text('4')    
+
+            if 120 < mouse[0] < 220 and 200 < mouse[1] < 250:
+                input_text('5')   
+
+            if 230 < mouse[0] < 330 and 200 < mouse[1] < 250:
+                input_text('6')   
+
+            if 10 < mouse[0] < 110 and 140 < mouse[1] < 190:
+                input_text('7')  
+
+            if 120 < mouse[0] < 220 and 140 < mouse[1] < 190:
+                input_text('8')    
+
+            if 230 < mouse[0] < 330 and 140 < mouse[1] < 190:
+                input_text('9')   
+
+            if 10 < mouse[0] < 110 and 80 < mouse[1] < 130:
+                input_text('clear') 
+            
+            if 120 < mouse[0] < 220 and 80 < mouse[1] < 130:
+                input_text('del') 
+
+    pygame.display.flip()
+
+pygame.quit()
+
+print('...Exit...')
+
+# coming soon...
+
