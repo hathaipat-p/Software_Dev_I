@@ -1,0 +1,92 @@
+
+###################################################################
+# Name : Hathaipat Chumninoul
+# Student ID : 6201012620244
+# Basic calculator by PyismpleGUI
+# Date : 27-8-2020
+###################################################################
+
+import  PySimpleGUI as sg
+
+sg.theme('DarkBrown')
+
+darkblue = '#353881'
+yellow = '#e3e39c'
+softred = '#EF7A85'
+
+##-----DEFAULT SETTINGS----------------------------------##
+bt: dict = {'size':(7,1), 'font':('Franklin Gothic Book', 24)}
+bo: dict = {'size':(7,1), 'font':('Franklin Gothic Book', 24), 'button_color':("black","#ECA527") }
+bw: dict = { 'size':(7,1), 'font':('Franklin Gothic Book', 24), 'button_color':("#313131","#B8B8B8") }
+bz: dict = { 'size':(15,1), 'font':('Franklin Gothic Book', 24) }
+bex: dict = { 'size':(7,1), 'font':('Franklin Gothic Book', 24), 'button_color':("#313131",softred) }
+
+layout = [ [sg.Text('Calculator', font=('Franklin Gothic Book', 24)) ,sg.Text(' ' * 60) , sg.Button('Exit', **bex)],
+            [sg.Text(size=(21,1), font=('Franklin Gothic Book', 36) , background_color=yellow , text_color=darkblue , justification='right',key='output')],
+            [sg.Button('AC',**bw) , sg.Button('+/-',**bw), sg.Button('%',**bw), sg.Button('/',**bo) ],
+            [sg.Button('7',**bt) , sg.Button('8',**bt), sg.Button('9',**bt), sg.Button('*',**bo) ],
+            [sg.Button('4',**bt) , sg.Button('5',**bt), sg.Button('6',**bt), sg.Button('-',**bo) ],
+            [sg.Button('1',**bt) , sg.Button('2',**bt), sg.Button('3',**bt), sg.Button('+',**bo) ],
+            [sg.Button('0',**bz) , sg.Button('.',**bt), sg.Button('=',**bo)]]
+
+window  = sg.Window("Calculator", layout )
+
+text_output = ''
+
+
+def calculate():
+    global text_output
+    try :
+        value['result'] = str(eval(text_output))
+        text_output = value['result']
+    except :
+        text_output = 'ERROR'
+
+
+def complement():
+    global text_output
+    try:
+        if text_output not in var['complememt']:
+            text_output = str(int(text_output)*(-1))
+    except :
+        text_output = 'ERROR'
+
+
+def percent():
+    global text_output
+    try:
+        text_output = str(float(text_output)/100)
+    except :
+        text_output = 'ERROR'
+
+
+var = { 'operator':'/*-+.' , 'operand':'0123456789' , 'complememt':'+*/'}
+
+while True :
+    
+    event , value = window.read()
+
+    if event == sg.WINDOW_CLOSED or event == 'Exit':
+        break
+
+    if event in var['operand']:
+        text_output += event
+    
+    if event == 'AC':
+        text_output = ''
+
+    if event in var['operator']:
+        text_output += event
+    
+    if event == '=':
+        calculate()
+    
+    if event == '+/-':
+        complement()
+    
+    if event == '%':
+        percent()
+        
+    window['output'].update(text_output)
+    
+window.close()
