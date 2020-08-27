@@ -5,18 +5,15 @@
 # Basic Calculator
 # GUI
 # Delete and clear text
+# still can't calculate
 ###################################################################
 
 import pygame
 import sys
 
 black = 0,0,0
-white = 255,255,255
-green = 0,250,0
 gray = 224,224,224
-dark_gray = 128,128,128
 red = 250,0,0
-dark_red = 204,0,0
 orange = 245,165,61
 
 pygame.init()
@@ -27,6 +24,9 @@ screen = pygame.display.set_mode( (scr_w,scr_h) )
 pygame.display.set_caption('Calculator')
 
 text_font = pygame.font.SysFont('FreesiaUPC', 40)
+
+clock = pygame.time.Clock()
+FPS = 100
 
 def create_text(text,x,y):
     text_surface = text_font.render( text, False, black )
@@ -83,11 +83,11 @@ clear_text = create_text('Clear',60,95)
 del_botton = pygame.draw.rect(screen, orange , (120,70,100,50))
 del_text = create_text('Del',170,95)
 
-convert_botton = pygame.draw.rect(screen, gray , (230,70,100,50))
+convert_botton = pygame.draw.rect(screen, orange , (230,70,100,50))
 convert_text = create_text('+/-',280,95)
 
-divide_botton = pygame.draw.rect(screen, gray , (340,70,100,50))
-divide_text = create_text('÷',390,95)
+divide_botton = pygame.draw.rect(screen, orange , (340,70,100,50))
+divide_text = create_text('/',390,95)
 
 #second row
 num_7 = pygame.draw.rect(screen, gray , (10,130,100,50))
@@ -99,7 +99,7 @@ eigth_text = create_text('8',170,155)
 num_9 = pygame.draw.rect(screen, gray , (230,130,100,50))
 nine_text = create_text('9',280,155)
 
-multiply_botton = pygame.draw.rect(screen, gray , (340,130,100,50))
+multiply_botton = pygame.draw.rect(screen, orange , (340,130,100,50))
 multiply_text = create_text('x',390,155)
 
 #third row
@@ -112,7 +112,7 @@ five_text = create_text('5',170,215)
 num_6 = pygame.draw.rect(screen, gray , (230,190,100,50))
 six_text = create_text('6',280,215)
 
-minus_botton = pygame.draw.rect(screen, gray , (340,190,100,50))
+minus_botton = pygame.draw.rect(screen, orange , (340,190,100,50))
 minus_text = create_text('-',390,215)
 
 #forth row
@@ -125,7 +125,7 @@ two_text = create_text('2',170,275)
 num_3 = pygame.draw.rect(screen, gray , (230,250,100,50))
 three_text = create_text('3',280,275)
 
-plus_botton = pygame.draw.rect(screen, gray , (340,250,100,50))
+plus_botton = pygame.draw.rect(screen, orange , (340,250,100,50))
 plus_text = create_text('+',390,275)
 
 #fifth row
@@ -135,7 +135,7 @@ zero_text = create_text('0',115,335)
 dot_botton = pygame.draw.rect(screen, gray , (230,310,100,50))
 dot_text = create_text('.',280,335)
 
-equal_botton = pygame.draw.rect(screen, gray , (340,310,100,50))
+equal_botton = pygame.draw.rect(screen, orange , (340,310,100,50))
 equal_text = create_text('=',390,335)
 #####################################################################
 
@@ -189,11 +189,20 @@ while running :
             if 120 < mouse[0] < 220 and 80 < mouse[1] < 130:
                 input_text('del') 
 
+            if 230 < mouse[0] < 430 and 80 < mouse[1] < 130:
+                input_text('/')
+
+            if 230 < mouse[0] < 430 and 140 < mouse[1] < 190:
+                input_text('*')
+
+            if 230 < mouse[0] < 430 and 200 < mouse[1] < 250:
+                input_text('-')
+
+            if 230 < mouse[0] < 430 and 260 < mouse[1] < 310:
+                input_text('+')
+
     pygame.display.flip()
 
 pygame.quit()
 
 print('...Exit...')
-
-# coming soon...
-
