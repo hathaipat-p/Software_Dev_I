@@ -10,7 +10,7 @@ import  PySimpleGUI as sg
 
 sg.theme('DarkBrown')
 
-darkblue = '#353881'
+darkblue = '#2d2e65'
 yellow = '#e3e39c'
 softred = '#EF7A85'
 
@@ -45,7 +45,7 @@ def calculate():
 def complement():
     global text_output
     try:
-        if text_output not in var['complememt']:
+        if text_output not in var['noncomplememt']:
             text_output = str(int(text_output)*(-1))
     except :
         text_output = 'ERROR'
@@ -59,7 +59,7 @@ def percent():
         text_output = 'ERROR'
 
 
-var = { 'operator':'/*-+.' , 'operand':'0123456789' , 'complememt':'+*/'}
+var = { 'operator':'/*-+.' , 'operand':'0123456789' , 'noncomplememt':'+*/'}
 
 while True :
     
