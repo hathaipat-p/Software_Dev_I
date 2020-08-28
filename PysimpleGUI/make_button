@@ -22,7 +22,7 @@ for i in range(n+1):
     button = (sg.Button(str(i),**bt))
     layout[p].append(button)
 
-str_list = str(list(range(n)))
+str_list = str(list(range(n+1)))
 
 window = sg.Window('Number' , layout)
 
