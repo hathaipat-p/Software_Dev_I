@@ -1,0 +1,46 @@
+###################################################################
+# Name : Hathaipat Chumninoul
+# Create Number Button
+# กำหนดได้ว่าจะให้สร้างปุ่มเลข 0 ถึง n แต่ละ row มีกี่ column
+# กดปุ่มแล้วแสดงเลขปุ่มนั่นบนหน้าต่าง สามารถกด clear ได้
+# Date : 28-8-2020
+###################################################################
+
+import PySimpleGUI as sg
+
+bt = {'size':(5,1), 'font':('Franklin Gothic Book', 16), 'button_color':("black","#F8F8F8")}
+
+layout = [ [sg.Button('AC',**bt), sg.Text(size=(20,1), font=('Franklin Gothic Book', 36), justification='left', key='output')] ]
+
+n = 50
+column = 10
+p = 0
+for i in range(n+1):
+    if i % column == 0:
+        p += 1
+        layout.append([])
+    button = (sg.Button(str(i),**bt))
+    layout[p].append(button)
+
+str_list = str(list(range(n)))
+
+window = sg.Window('Number' , layout)
+
+text_output = ''
+
+while True:
+
+    event, values = window.read()
+
+    if event == sg.WINDOW_CLOSED :
+        break
+
+    if event in str_list:
+        text_output += event
+
+    if event == 'AC':
+        text_output = ''
+
+    window['output'].update(text_output)
+
+window.close()
