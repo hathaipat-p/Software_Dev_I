@@ -6,8 +6,6 @@ pygame.init()
 
 class ball():
 
-    #global r , g , b , position_ball
-
     def __init__(self,surface):
         position_ball = [ (100,100) , (100,600) , (900,100) , (900,600) ,
                         (100,350) , (900,350) , (500,100) , (500,600)]
@@ -19,8 +17,8 @@ class ball():
         self.color = (r,g,b)
         self.pos = random.choice(position_ball) 
         self.surface = surface
-        self.draw = pygame.draw.circle( self.surface, self.color, self.pos, self.r ,0)
+        self.draw = pygame.draw.circle( self.surface, self.color, self.pos, self.r ,0)      #วาดบอล
 
     def remove_ball(self,img):
-        self.surface.blit( img , (0,0) )
+        self.surface.blit( img , (0,0) )        #เมื่อต้องการลบบอล ให้เอารูปจากกล้องมาทับบอลเก่า
         
