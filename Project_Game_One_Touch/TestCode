@@ -1,3 +1,4 @@
+'''
 ###############################################
 ############## test class ball ################
 ###############################################
@@ -32,3 +33,63 @@ while running :
     pygame.display.flip()
 
 pygame.quit()
+'''
+
+'''
+###############################################
+###### test class ball w/ pygame.camera #######
+############# click mouse to play #############
+###############################################
+import pygame
+from ball import ball
+import pygame.camera
+import time
+
+clock = pygame.time.Clock()
+
+scr_w , scr_h = 1000,700
+
+screen = pygame.display.set_mode( (scr_w , scr_h) )
+pygame.display.set_caption('test')
+
+
+def open_camera( frame_size=(1280,720),mode='RGB'):
+    pygame.camera.init()
+    list_cameras = pygame.camera.list_cameras()
+    if list_cameras:
+        # use the first camera found
+        camera = pygame.camera.Camera(list_cameras[0], frame_size, mode )
+        return camera 
+    return None 
+
+camera = open_camera()
+
+surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+
+obj_ball = ball(surface)
+
+running = True
+
+while running :
+
+    clock.tick(1000)
+
+    img = camera.get_image()
+    screen.blit( img , (0,0) )  
+    obj_ball
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            obj_ball.remove_ball(img)
+            pygame.time.wait(50)
+            obj_ball = ball(surface)
+
+    screen.blit( surface, (0,0) )
+
+    pygame.display.flip()
+
+camera.stop()
+pygame.quit()
+'''
