@@ -1,0 +1,34 @@
+###############################################
+############## test class ball ################
+###############################################
+
+import pygame
+from ball import ball
+
+#pygame.init()
+
+scr_w , scr_h = 1000,700
+
+screen = pygame.display.set_mode( (scr_w , scr_h) )
+pygame.display.set_caption('test')
+
+#screen.fill( (255,255,255))   
+obj_ball = ball(screen)
+ball_list = []
+ball_list.append(obj_ball)
+running = True
+
+while running :
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            obj_ball.remove_ball()
+            pygame.time.wait(50)
+            obj_ball = ball(screen)
+            ball_list.append(obj_ball)
+
+    pygame.display.flip()
+
+pygame.quit()
