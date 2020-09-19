@@ -1,22 +1,18 @@
 '''
 ###############################################
-############## test class ball ################
+############### test class ball ###############
+################# w/o camera ##################
 ###############################################
-
 import pygame
 from ball import ball
-
-#pygame.init()
 
 scr_w , scr_h = 1000,700
 
 screen = pygame.display.set_mode( (scr_w , scr_h) )
-pygame.display.set_caption('test')
+pygame.display.set_caption('create ball')
 
-#screen.fill( (255,255,255))   
-obj_ball = ball(screen)
-ball_list = []
-ball_list.append(obj_ball)
+obj_ball = ball(screen)             #สร้างบอลลูกแรก
+
 running = True
 
 while running :
@@ -24,11 +20,11 @@ while running :
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
         if event.type == pygame.MOUSEBUTTONDOWN:
             obj_ball.remove_ball()
-            pygame.time.wait(50)
-            obj_ball = ball(screen)
-            ball_list.append(obj_ball)
+            pygame.time.wait(50)                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
+            obj_ball = ball(screen)             #สร้างบอลลูกใหม่
 
     pygame.display.flip()
 
@@ -50,7 +46,7 @@ clock = pygame.time.Clock()
 scr_w , scr_h = 1000,700
 
 screen = pygame.display.set_mode( (scr_w , scr_h) )
-pygame.display.set_caption('test')
+pygame.display.set_caption('create ball w/ cam')
 
 
 def open_camera( frame_size=(1280,720),mode='RGB'):
@@ -66,7 +62,7 @@ camera = open_camera()
 
 surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
-obj_ball = ball(surface)
+obj_ball = ball(screen)             #สร้างบอลลูกแรก
 
 running = True
 
@@ -83,8 +79,8 @@ while running :
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             obj_ball.remove_ball(img)
-            pygame.time.wait(50)
-            obj_ball = ball(surface)
+            pygame.time.wait(50)                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
+            obj_ball = ball(screen)             #สร้างบอลลูกใหม่
 
     screen.blit( surface, (0,0) )
 
