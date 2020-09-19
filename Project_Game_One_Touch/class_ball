@@ -1,0 +1,24 @@
+import pygame
+import random
+
+pygame.init()
+
+class ball():
+
+    #global r , g , b , position_ball
+
+    def __init__(self,surface):
+        position_ball = [ (100,100) , (100,600) , (900,100) , (900,600) ,
+                        (100,350) , (900,350) , (500,100) , (500,600)]
+        r = random.randint(0,255)
+        g = random.randint(0,255)
+        b = random.randint(0,255)
+
+        self.r = 50
+        self.color = (r,g,b)
+        self.pos = random.choice(position_ball) 
+        self.surface = surface
+        self.draw = pygame.draw.circle( self.surface, self.color, self.pos, self.r ,0)
+
+    def remove_ball(self):
+        self.surface.fill((0,0,0))
