@@ -13,7 +13,6 @@ clock = pygame.time.Clock()
 scr_w , scr_h = 1000,700
 
 screen = pygame.display.set_mode( (scr_w , scr_h) )
-surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
 pygame.display.set_caption('test')
 
@@ -52,7 +51,7 @@ def game_play():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if obj_ball.is_collided(mx, my):
-                    surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surfsce ใหม่เพื่อลบบอลออก
+                    surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surface ใหม่เพื่อลบบอลออก
                     pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
                     obj_ball = ball(surface)                                            #สร้างบอลลูกใหม่
             
