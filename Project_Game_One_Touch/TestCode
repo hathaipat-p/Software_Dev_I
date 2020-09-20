@@ -7,8 +7,6 @@
 import pygame
 from ball import ball
 
-#pygame.init()
-
 scr_w , scr_h = 1000,700
 
 screen = pygame.display.set_mode( (scr_w , scr_h) )
