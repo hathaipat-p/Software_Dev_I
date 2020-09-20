@@ -1,43 +1,10 @@
-'''
 ###############################################
-############### test class ball ###############
-################# w/o camera ##################
-###############################################
-import pygame
-from ball import ball
-
-scr_w , scr_h = 1000,700
-
-screen = pygame.display.set_mode( (scr_w , scr_h) )
-pygame.display.set_caption('create ball')
-
-obj_ball = ball(screen)             #สร้างบอลลูกแรก
-
-running = True
-
-while running :
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            obj_ball.remove_ball()
-            pygame.time.wait(50)                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
-            obj_ball = ball(screen)             #สร้างบอลลูกใหม่
-
-    pygame.display.flip()
-
-pygame.quit()
-'''
-
-'''
-###############################################
-###### test class ball w/ pygame.camera #######
-############# click mouse to play #############
+#------ test class ball w/ pygame.camera -----#
+#------------ click mouse to play ------------#
+#--------------- สร้าง function ---------------#
 ###############################################
 import pygame
-from ball import ball
+from ball import ball      
 import pygame.camera
 import time
 
@@ -46,7 +13,9 @@ clock = pygame.time.Clock()
 scr_w , scr_h = 1000,700
 
 screen = pygame.display.set_mode( (scr_w , scr_h) )
-pygame.display.set_caption('create ball w/ cam')
+surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+
+pygame.display.set_caption('test')
 
 
 def open_camera( frame_size=(1280,720),mode='RGB'):
@@ -58,34 +27,41 @@ def open_camera( frame_size=(1280,720),mode='RGB'):
         return camera 
     return None 
 
-camera = open_camera()
 
-surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+def game_play():
 
-obj_ball = ball(screen)             #สร้างบอลลูกแรก
+    camera = open_camera()
 
-running = True
+    surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
-while running :
+    obj_ball = ball(surface)             #สร้างบอลลูกแรก
 
-    clock.tick(1000)
+    running = True
 
-    img = camera.get_image()
-    screen.blit( img , (0,0) )  
-    obj_ball
+    while running :
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            obj_ball.remove_ball(img)
-            pygame.time.wait(50)                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
-            obj_ball = ball(screen)             #สร้างบอลลูกใหม่
+        clock.tick(1000)
 
-    screen.blit( surface, (0,0) )
+        img = camera.get_image()
+        screen.blit( img , (0,0) )  
 
-    pygame.display.flip()
+        mx , my = pygame.mouse.get_pos()
 
-camera.stop()
-pygame.quit()
-'''
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if obj_ball.is_collided(mx, my):
+                    surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surfsce ใหม่เพื่อลบบอลออก
+                    pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
+                    obj_ball = ball(surface)                                            #สร้างบอลลูกใหม่
+            
+        screen.blit( surface, (0,0) )
+
+        pygame.display.flip()
+
+    camera.stop()
+    pygame.quit()
+
+
+game_play()
