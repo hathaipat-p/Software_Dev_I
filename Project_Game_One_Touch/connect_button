@@ -16,8 +16,18 @@ text_font2 = pygame.font.Font('freesansbold.ttf', 30)
 
 pygame.display.set_caption('One Touch')
 screen = pygame.display.set_mode((1000, 700))
-surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
-screen.fill(black)
+surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+
+
+def open_camera( frame_size=(1280,720),mode='RGB'):
+    pygame.camera.init()
+    list_cameras = pygame.camera.list_cameras()
+    if list_cameras:
+        # use the first camera found
+        camera = pygame.camera.Camera(list_cameras[0], frame_size, mode )
+        return camera 
+    return None 
+
 
 #picture bg
 image = pygame.image.load(r'C:\Users\User\workspace-software\Game\ball.jpg') 
@@ -44,8 +54,10 @@ def create_text(text,x,y):
 
 
  #--------------------------------------------------MAIN MENU------------------------------------------------------------#   
-click = False
+#click = False
 def main_menu():
+
+    screen.fill(black)
 
     screen.blit(image, (200, 400))
     text_show('ONE TOUCH')
@@ -53,16 +65,17 @@ def main_menu():
     button_1 =  pygame.Rect(400,200,200,100)
 
     pygame.draw.rect(screen, red , button_1)
+
     create_text('START !',500,250)
 
     while True:
-        
-        mx1, my1 = pygame.mouse.get_pos()
 
+        mx1, my1 = pygame.mouse.get_pos()
+        
         if button_1.collidepoint((mx1, my1)):
             if click:
                 game()
-        
+    
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -79,25 +92,38 @@ def main_menu():
         pygame.display.update()
         clock.tick(60)
 
-
 def game():
+
+    from ball import ball  
+    import pygame.camera
+
+    surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+
+    camera = open_camera()
+
+    obj_ball = ball(surface1)             #สร้างบอลลูกแรก
 
     running= True
     while running:
 
-        screen.fill(black)
-        create_text('TIME :',80,60)
-        create_text('SCORE : ',820,60)
+        img = camera.get_image()
+        screen.blit( img , (0,0) )  
+
+        pygame.draw.rect(screen, black , (0,0,1000,60))
+        
+        create_text('TIME :',80,30)
+        create_text('SCORE : ',820,30)
 
         mx2, my2 = pygame.mouse.get_pos()
-        button_2 = pygame.Rect(800,600,180,80) #(left,top,width,hight)
+        button_2 = pygame.Rect(900,650,100,50) #(left,top,width,hight)
+
+        pygame.draw.rect(screen, red , button_2)
+        create_text('EXIT',950,675)
 
         if button_2.collidepoint((mx2, my2)):
             if click:
                 score()
-
-        pygame.draw.rect(screen, red , button_2)
-        create_text('EXIT',890,640)
+                camera.stop()
 
         click = False
         for event in pygame.event.get():
@@ -108,12 +134,21 @@ def game():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                    camera.stop()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if obj_ball.is_collided(mx2, my2):
+                    surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surface ใหม่เพื่อลบบอลออก
+                    pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
+                    obj_ball = ball(surface1)
+        
+        screen.blit( surface1 , (0,0) )
 
         pygame.display.update()
         clock.tick(60)
+
 
 def score():
 
@@ -135,9 +170,23 @@ def score():
         create_text('RESTART !',500,440)
         create_text('SCORE : ',350,250)
 
-
         click = False
         for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+main_menu()
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
