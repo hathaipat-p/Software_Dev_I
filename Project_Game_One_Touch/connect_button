@@ -1,3 +1,4 @@
+
 import pygame, sys
 from pygame.locals import *
 
@@ -185,22 +186,6 @@ def score():
 
         pygame.display.update()
         clock.tick(60)
-
-main_menu()
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
- 
-        pygame.display.update()
-        clock.tick(60)
-
 
 main_menu()
 
