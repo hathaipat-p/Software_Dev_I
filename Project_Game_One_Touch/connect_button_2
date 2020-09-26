@@ -1,6 +1,7 @@
-#--------- Add Timer and Counting Score ---------#
-#------------- window scale 1000x700 ------------#
 
+#--------- Add Timer and Counting Score ---------#
+# ------------- Using pygame.camera -------------#
+#------------- window scale 1000x700 ------------#
 
 import pygame, sys
 from pygame.locals import *
