@@ -13,7 +13,7 @@ class ball():
         g = random.randint(0,255)
         b = random.randint(0,255)
 
-        self.r = 200
+        self.r = 50
         self.color = (r,g,b)
         self.pos = random.choice(position_ball) 
         self.surface = surface
