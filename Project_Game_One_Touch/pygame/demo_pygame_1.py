@@ -56,114 +56,210 @@ def text_howto(text,x,y):
     screen.blit( text_surface , text_rect )
     return 0
 
-#-------------- part opencv --------------#
-camera = cv2.VideoCapture(0)
-face_detector = cv2.CascadeClassifier(r'C:\Users\User\workspace-software\Game\OpenCV\haarcascade_frontalface_default.xml')
-camera.set(3, 1280)
-camera.set(4, 720)
-#-----------------------------------------#
 
-surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+#--------------------------------------------------MAIN MENU------------------------------------------------------------#   
 
-obj_ball = ball(surface1)             #สร้างบอลลูกแรก
+def main_menu():
 
-count_score = 0
+    screen.fill(black)
 
-#Timer
-font = pygame.font.SysFont(None, 45)
-counter = 60
-text = font.render(str(counter), True, white)
-timer_event = pygame.USEREVENT+1
-pygame.time.set_timer(timer_event, 1000)
-text_rect = text.get_rect()
-text_rect.center = (150,15)
+    screen.blit(image, (350, 400))
+    text_show('ONE TOUCH')
+    text_howto('** HOW TO PLAY ? : Touch/Click the ball through the camera ',640,400)
+    text_howto('when you tap it, there will show your score with coundown timer :P **',640,450)
 
-running= True
-while running:
+    button_1 =  pygame.Rect(550,230,200,100)
 
-    #------------------- part openCV ----------------#
-    ret, frame = camera.read()
-    frame = cv2.resize(frame, (1280, 720))
-    frame = cv2.flip(frame,1)
+    pygame.draw.rect(screen, red , button_1)
 
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    create_text('START !',650,280)
 
-    frame = cv2.transpose(frame)
-    img = pygame.surfarray.make_surface(frame)
+    while True:
 
-    # Convert to grayscale
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    faces = face_detector.detectMultiScale(gray, 1.1, 4)
-
-    # Draw the rectangle around each face
-    for (x, y, w, h) in faces:
-        pygame.draw.rect(img, (0,255,0), (x,y,x+w, y+h), 3)
-        print((x,y))
-        if obj_ball.is_collided(x, y):
-            surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surface ใหม่เพื่อลบบอลออก
-            count_score += 1
-            pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
-            obj_ball = ball(surface1)
+        mx1, my1 = pygame.mouse.get_pos()
         
-    #cv2.waitKey(1)
-
-    #------------------------------------------------#
-
-    screen.blit( img , (0,0) ) 
-
-    pygame.draw.rect(screen, black , (0,0,1280,60))
+        if button_1.collidepoint((mx1, my1)):
+            if click:
+                game()
     
-    create_text('TIME : ' ,80,30)
-
-    screen.blit(text, text_rect.center)
-    
-    create_text('SCORE :    ' + str(count_score) ,1150,30)
-
-    mx2, my2 = pygame.mouse.get_pos()
-    button_2 = pygame.Rect(1180,670,100,50) #(left,top,width,hight)
-
-    pygame.draw.rect(screen, red , button_2)
-    create_text('EXIT',1230,700)
-    
-
-    if button_2.collidepoint((mx2, my2)):
-        if click:
-            score()
-
-    click = False
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == timer_event:
-            counter -= 1
-            text = font.render(str(counter), True, white)
-            if counter == 0:
-                pygame.time.set_timer(timer_event, 0)
-                #time_up()
-                camera.release()
-                cv2.destroyAllWindows()
-
-        if event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
-                pygame.quit() 
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
                 sys.exit()
-                camera.release()
-                cv2.destroyAllWindows()
-        if event.type == MOUSEBUTTONDOWN:
-            if event.button == 1:
-                click = True
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if obj_ball.is_collided(mx2, my2):
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+def game():
+    global count_score
+    #-------------- part opencv --------------#
+    camera = cv2.VideoCapture(0)
+    face_detector = cv2.CascadeClassifier(r'C:\Users\User\workspace-software\Game\OpenCV\haarcascade_frontalface_default.xml')
+    camera.set(3, 1280)
+    camera.set(4, 720)
+    #-----------------------------------------#
+
+    surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
+
+    obj_ball = ball(surface1)             #สร้างบอลลูกแรก
+
+    count_score = 0
+
+    #Timer
+    font = pygame.font.SysFont(None, 45)
+    counter = 60
+    text = font.render(str(counter), True, white)
+    timer_event = pygame.USEREVENT+1
+    pygame.time.set_timer(timer_event, 1000)
+    text_rect = text.get_rect()
+    text_rect.center = (150,15)
+
+    running= True
+    while running:
+
+        #------------------- part openCV ----------------#
+        ret, frame = camera.read()
+        frame = cv2.resize(frame, (1280, 720))
+        frame = cv2.flip(frame,1)
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        frame = cv2.transpose(frame)
+        img = pygame.surfarray.make_surface(frame)
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        faces = face_detector.detectMultiScale(gray, 1.1, 4)
+
+        # Draw the rectangle around each face
+        for (x, y, w, h) in faces:
+            pygame.draw.rect(img, (0,255,0), (x,y,x+w, y+h), 3)
+            print((x,y))
+            if obj_ball.is_collided(x, y):
                 surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surface ใหม่เพื่อลบบอลออก
                 count_score += 1
                 pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
                 obj_ball = ball(surface1)
-        
-    
-    screen.blit( surface1 , (0,0) )
 
-    pygame.display.update()
-    clock.tick(60) 
-    
+        #------------------------------------------------#
+
+        screen.blit( img , (0,0) ) 
+
+        pygame.draw.rect(screen, black , (0,0,1280,60))
+
+        create_text('TIME : ' ,80,30)
+
+        screen.blit(text, text_rect.center)
+
+        create_text('SCORE :    ' + str(count_score) ,1150,30)
+
+        mx2, my2 = pygame.mouse.get_pos()
+        button_2 = pygame.Rect(1180,670,100,50) #(left,top,width,hight)
+
+        pygame.draw.rect(screen, red , button_2)
+        create_text('EXIT',1230,700)
+
+
+        if button_2.collidepoint((mx2, my2)):
+            if click:
+                score()
+
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == timer_event:
+                counter -= 1
+                text = font.render(str(counter), True, white)
+                if counter == 0:
+                    pygame.time.set_timer(timer_event, 0)
+                    #time_up()
+                    camera.release()
+                    cv2.destroyAllWindows()
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit() 
+                    sys.exit()
+                    camera.release()
+                    cv2.destroyAllWindows()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if obj_ball.is_collided(mx2, my2):
+                    surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )          #เหมือนการรีหน้า surface ใหม่เพื่อลบบอลออก
+                    count_score += 1
+                    pygame.time.wait(50)                                                #รอเวลาสักครู้เพื่อขึ้นลูกใหม่
+                    obj_ball = ball(surface1)
+
+
+        screen.blit( surface1 , (0,0) )
+
+        pygame.display.update()
+        clock.tick(60) 
+   
+
+def time_up():
+    is_running = True  
+    while is_running :
+
+        screen.fill(black)
+        screen.blit(image, (350, 400))
+        text_show('ONE TOUCH')
+        
+        create_text('TIMES UP!',650,300)
+
+        pygame.display.update()
+        pygame.time.wait(3000)
+        score()
+
+
+def score():
+
+    is_running = True  
+    while is_running :
+
+        screen.fill(black)
+        screen.blit(image, (350, 400))
+        text_show('ONE TOUCH')
+        
+        mx3,my3 = pygame.mouse.get_pos()
+        button_3 = pygame.Rect(550,350,200,100)
+
+        if button_3.collidepoint((mx3, my3)):
+            if click:
+                main_menu()
+        
+        pygame.draw.rect(screen, red , button_3)
+        create_text('RESTART !',650,400)
+        create_text('SCORE :    ' + str(count_score),650,280)
+
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+main_menu()
