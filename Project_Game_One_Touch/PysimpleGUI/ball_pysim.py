@@ -1,3 +1,4 @@
+
 import PySimpleGUI as sg     
 import random
 from colors import *
@@ -16,3 +17,13 @@ class ball_pysim():
         self.color = random.choice(COLORS)
         self.x, self.y = random.choice(position_ball) 
         self.canvas = canvas
+        #self.circle = self.canvas.DrawCircle((self.x, self.y), self.r, fill_color=self.color,line_color='black')
+
+    def delete_ball(self):
+        self.canvas.DeleteFigure(self.circle)
+        
+
+    def is_collided(self,mx, my):
+        if self.draw.collidepoint((mx, my)):
+            return True
+        else : return False
