@@ -3,7 +3,8 @@ from pygame.locals import *
 from ball import ball  
 import pygame.camera
 import cv2
-
+#--------------- ส่วน game ยังไม่สมบูรณ์ face detact ยัง error -------------------#
+#---------------------- เชื่อม pygame กับ opencv แล้ว --------------------------#
 
 pygame.init()
 pygame.font.init()
