@@ -1,4 +1,5 @@
 # ---------------- ส่วน game ยังไม่เสร็จ -----------------#
+# --------------- หน้าเกมมี time score ----------------#
 import cv2
 import numpy as np
 import PySimpleGUI as sg 
