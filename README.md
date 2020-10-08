@@ -1,3 +1,3 @@
 # 010123131
 
-### Software development practic
+### Software development practice
