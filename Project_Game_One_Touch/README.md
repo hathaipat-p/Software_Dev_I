@@ -1,5 +1,5 @@
 # Project Game One Touch
-## Game Project : ONE TOUCH (Pygame & PysimpleGUI)
+### Game Project : ONE TOUCH (Pygame & PysimpleGUI)
 ##### Blog Update : https://one-touch-game-project.blogspot.com/p/one-touch.html
 **Author :**
 * นางสาวหทัยพัชร ชำนินวล 6201012620244   ==>   github :https://github.com/hathaipat-p/010123131/tree/master/Project_Game_One_Touch
