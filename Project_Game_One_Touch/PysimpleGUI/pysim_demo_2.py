@@ -1,5 +1,5 @@
 # ---------------- ส่วน game ยังไม่เสร็จ -----------------#
-# --------------- หน้าเกมมี time score ----------------#
+# --------------- หน้าเกมมี timer + score ----------------#
 import cv2
 import numpy as np
 import PySimpleGUI as sg 
@@ -14,6 +14,38 @@ White = '#F8F8FF'
 Black = '#000000'
 
 sg.theme('DarkBlack')
+
+
+
+def login():
+    layout = [
+            [sg.Text('ONE-TOUCH LOGIN', size=(40,3), justification='center', text_color='White', font=('Franklin Gothic Book', 50, 'bold'))],
+            [sg.Text('--------', size=(35, 1), font=('Segoe UI', 14), text_color='Black'),sg.Text('PASSWORD :', size=(12, 1), font=('Segoe UI', 30), text_color='White'),sg.Input(key='-password-')],
+            [sg.Text('--------', size=(22, 8), font=('Segoe UI', 14), text_color='Black')],
+            [sg.Text('--------', size=(55, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('SUBMIT',**bt1)]
+                
+            ]
+
+    window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
+    window.Maximize()
+
+    while True:
+        button , value = window.read()
+        password = value['-password-']
+
+        if button == 'SUBMIT' :
+            if password == '1234':
+                sg.popup("Login SUCCESSFUL")
+                main_menu()
+                window.Close()
+            else:
+                sg.popup("Login FAILED!!")
+
+        if button == sg.WIN_CLOSED:
+            break
+
+    window.Close()
+
 
 
 def main_menu() :
@@ -41,14 +73,17 @@ def main_menu() :
 
         if button == sg.WIN_CLOSED :
             break
-            window.Close()
+
+    window.close()
 
 
 def game():
 
+    global count_score
+
     #----------------open cv------------------#
     cap = cv2.VideoCapture(0)
-    face_detector = cv2.CascadeClassifier(r'C:\Users\User\workspace-software\Game\OpenCV\haarcascade_frontalface_default.xml')
+    face_detector = cv2.CascadeClassifier(r'C:\software\haarcascade_frontalface_default.xml')
     cap.set(3, 1280)
     cap.set(4, 720)
     #-----------------------------------------#
@@ -57,10 +92,10 @@ def game():
 
     # define the window layout
     layout = [
-            [sg.Button('TIME :',**bt2),sg.Text('--------', size=(5, 1), font=('Segoe UI', 14), text_color='Black'),sg.Text('', size=(10, 1), font=('Helvetica', 22),text_color = 'White',key='timer'),
+            [sg.Text('TIME : ', size=(10, 1), font=('Segoe UI', 20), text_color='White'),sg.Text('', size=(10, 1), font=('Helvetica', 22),text_color = 'White',key='timer'),
             sg.Button('Ball', size=(10, 1), font='Helvetica 14'),
             sg.Button('Exit', size=(10, 1), font='Helvetica 14') ],
-            [sg.Text('SCORE : ', size=(15, 3), font=('Segoe UI', 20), text_color='White'),sg.Text('', size=(15, 1), font=('Segoe UI', 20), text_color='White', key='score')] ,
+            [sg.Text('SCORE : ', size=(10, 1), font=('Segoe UI', 20), text_color='White'),sg.Text('', size=(10, 1), font=('Helvetica', 22), text_color='White', key='score1')] ,
             [sg.T('                       ') , sg.Graph(canvas_size=(1280,720), graph_bottom_left=(0,0), graph_top_right=(400,400),key="canvas")]
             ]
 
@@ -70,33 +105,47 @@ def game():
 
     canvas = window['canvas']
 
-    ball = ball_pysim(canvas)        
+    ball = ball_pysim(canvas) 
+    #-------score-------#
+    count_score = 0
+
+    #-----timer--------#
+    timer_running = True  
+    seconds = 5
+    start = time()
+    current = time()
 
     while True:
         
         circle = canvas.DrawCircle((ball.x, ball.y), ball.r, fill_color=ball.color, line_color='black')
 
         button, values = window.read(timeout=60)
-        if button == 'Exit' or button == sg.WIN_CLOSED:
-            break
-            window.close()
-        if button == 'TIME :'  :
-            seconds = 3
-            start = time()
-            current = time()
-            timeleft = seconds
 
-            while timeleft > 0 :
-                window.FindElement("timer").Update(timeleft)
-                window.refresh()
-                current = time()
-                timeleft = int(seconds - (current - start))
-                if timeleft == 0:
-                    sg.popup("TIME UP!")
-                    score()
+         
+        if button == 'Exit' :
+            score()
+        
+        if  button == sg.WIN_CLOSED :
+            break
+
         if button == 'Ball':
             canvas.DeleteFigure(circle)
             ball = ball_pysim(canvas)
+            count_score += 1
+            window['score1'].update(count_score)
+
+
+        if timer_running: 
+            current = time()
+            timeleft = int(seconds - (current - start))
+            window['timer'].update(timeleft)
+            window.refresh()
+
+            if timeleft == 0:
+                sg.popup("TIME UP")
+                score()
+                window.Close() 
+            
 
         ret, frame = cap.read()
         frame = cv2.flip(frame, 1)
@@ -104,29 +153,36 @@ def game():
        
         canvas.DrawImage(data=imgbytes, location=(0, 400))
 
-
+    window.close()
+        
 
 def score() :
 
     layout =[
 
-            [sg.Text('ONE-TOUCH', size=(30,2), justification='center', text_color='White', font=('Franklin Gothic Book', 80, 'bold'))],
-            [sg.Text('--------', size=(30, 2), font=('Segoe UI', 14), text_color='Black'),sg.Text('SCORE : ', size=(10, 2), font=('Segoe UI', 30), text_color='White'),sg.Text('', size=(15, 1), font=('Segoe UI', 30), text_color='White', key='score')],   
-            [sg.Text('--------', size=(60, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('RESTART',**bt2),sg.Text('--------', size=(5, 1), font=('Segoe UI', 14), text_color='Black')]
+                [sg.Text('ONE-TOUCH', size=(30,2), justification='center', text_color='White', font=('Franklin Gothic Book', 80, 'bold'))],
+                [sg.Text('--------', size=(40, 3), font=('Segoe UI', 14), text_color='Black'),sg.Text('SCORE : ', size=(10, 2), font=('Segoe UI', 40), text_color='White'),sg.Text('', size=(12, 2), font=('Segoe UI', 40), text_color='White', key='score2')],   
+                [sg.Text('--------', size=(60, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('RESTART',**bt2),sg.Text('--------', size=(5, 1), font=('Segoe UI', 14), text_color='Black')]
 
             ]
 
     window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
     window.Maximize()
 
-    while True:
-        button , values = window.read()
+    while True : 
+        button , values = window.read(timeout=60)
+           
+        window['score2'].update(count_score)
+                
         if button == "RESTART" :
             main_menu()
             window.Close()
+            
 
         if button == sg.WIN_CLOSED :
             break
-            window.Close()
 
-main_menu()
+    window.close()
+            
+    
+login()
