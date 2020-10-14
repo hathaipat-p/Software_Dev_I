@@ -1,5 +1,6 @@
-# ---------------- ส่วน game ยังไม่เสร็จ -----------------#
-# --------------- หน้าเกมมี timer + score ----------------#
+# -------------------------- ส่วน game ยังไม่เสร็จ -------------------------------#
+# --------------- กำลังปรับ position ball ให้ตรงกกับ detect face ----------------#
+# ---------------------- มีกรอบสีเหลี่ยมขึ้นตอน detect face ----------------------#
 import cv2
 import numpy as np
 import PySimpleGUI as sg 
@@ -22,8 +23,7 @@ def login():
             [sg.Text('ONE-TOUCH LOGIN', size=(40,3), justification='center', text_color='White', font=('Franklin Gothic Book', 50, 'bold'))],
             [sg.Text('--------', size=(35, 1), font=('Segoe UI', 14), text_color='Black'),sg.Text('PASSWORD :', size=(12, 1), font=('Segoe UI', 30), text_color='White'),sg.Input(key='-password-')],
             [sg.Text('--------', size=(22, 8), font=('Segoe UI', 14), text_color='Black')],
-            [sg.Text('--------', size=(55, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('SUBMIT',**bt1)]
-                
+            [sg.Text('--------', size=(55, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('SUBMIT',**bt1)]   
             ]
 
     window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
@@ -83,7 +83,7 @@ def game():
 
     #----------------open cv------------------#
     cap = cv2.VideoCapture(0)
-    face_detector = cv2.CascadeClassifier(r'C:\software\haarcascade_frontalface_default.xml')
+    face_detector = cv2.CascadeClassifier(r'C:\Users\User\workspace-software\Game\OpenCV\haarcascade_frontalface_default.xml')
     cap.set(3, 1280)
     cap.set(4, 720)
     #-----------------------------------------#
@@ -111,17 +111,44 @@ def game():
 
     #-----timer--------#
     timer_running = True  
-    seconds = 5
+    seconds = 34
     start = time()
     current = time()
 
     while True:
+
+        imgbytes = None
+
+        #------------------- part openCV ----------------#
+        ret, frame = cap.read()
+        frame = cv2.resize(frame, (1280, 720))                      # ตั้งขนาดภาพเป็น 1290x720
+        frame = cv2.flip(frame, 1)
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)              # แปลงสีจากโหมด BGR เป็น GRAY เพื่อนำภาพไปใช้สำหรับ face detection
+
+        faces = face_detector.detectMultiScale(gray, 1.1, 4)        # ทำการ dectect หน้าโดยจะให้ ตำแหน่ง x y ความยาว ความสูง
+
+        # Draw the rectangle around each face
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+            imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+            print((x,y))
         
+            if ball.x-ball.r < x and x < ball.x+ball.r and ball.y-ball.r < y and y < ball.y+ball.r :
+                canvas.DeleteFigure(circle)
+                ball = ball_pysim(canvas)
+                count_score += 1
+                window['score1'].update(count_score)
+
+        #------------------------------------------------#    
+       
+        canvas.DrawImage(data=imgbytes, location=(0, 400))
+
         circle = canvas.DrawCircle((ball.x, ball.y), ball.r, fill_color=ball.color, line_color='black')
 
         button, values = window.read(timeout=60)
 
-         
         if button == 'Exit' :
             score()
         
@@ -134,7 +161,6 @@ def game():
             count_score += 1
             window['score1'].update(count_score)
 
-
         if timer_running: 
             current = time()
             timeleft = int(seconds - (current - start))
@@ -145,13 +171,6 @@ def game():
                 sg.popup("TIME UP")
                 score()
                 window.Close() 
-            
-
-        ret, frame = cap.read()
-        frame = cv2.flip(frame, 1)
-        imgbytes = cv2.imencode('.png', frame)[1].tobytes() 
-       
-        canvas.DrawImage(data=imgbytes, location=(0, 400))
 
     window.close()
         
@@ -159,11 +178,9 @@ def game():
 def score() :
 
     layout =[
-
                 [sg.Text('ONE-TOUCH', size=(30,2), justification='center', text_color='White', font=('Franklin Gothic Book', 80, 'bold'))],
                 [sg.Text('--------', size=(40, 3), font=('Segoe UI', 14), text_color='Black'),sg.Text('SCORE : ', size=(10, 2), font=('Segoe UI', 40), text_color='White'),sg.Text('', size=(12, 2), font=('Segoe UI', 40), text_color='White', key='score2')],   
                 [sg.Text('--------', size=(60, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('RESTART',**bt2),sg.Text('--------', size=(5, 1), font=('Segoe UI', 14), text_color='Black')]
-
             ]
 
     window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
