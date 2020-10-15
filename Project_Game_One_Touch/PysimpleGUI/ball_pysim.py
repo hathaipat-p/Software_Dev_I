@@ -1,3 +1,4 @@
+# --------------- เหลือปรับตำแหน่งให้ตรงกับหน้าในภาพ ----------------#
 
 import PySimpleGUI as sg     
 import random
@@ -20,7 +21,8 @@ class ball_pysim():
 
     def delete_ball(self):
         self.canvas.DeleteFigure(self.circle)
-
+    
+    # ลองปรับตำแหน่ง
     def is_collided(self, facex, facey ):
         #if self.x-self.r < facex and facex < self.x+self.r and self.y-self.r < facey and facey < self.y+self.r:
         #    return True
