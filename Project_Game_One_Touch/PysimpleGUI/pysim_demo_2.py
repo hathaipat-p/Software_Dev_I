@@ -23,7 +23,8 @@ def login():
             [sg.Text('ONE-TOUCH LOGIN', size=(40,3), justification='center', text_color='White', font=('Franklin Gothic Book', 50, 'bold'))],
             [sg.Text('--------', size=(35, 1), font=('Segoe UI', 14), text_color='Black'),sg.Text('PASSWORD :', size=(12, 1), font=('Segoe UI', 30), text_color='White'),sg.Input(key='-password-')],
             [sg.Text('--------', size=(22, 8), font=('Segoe UI', 14), text_color='Black')],
-            [sg.Text('--------', size=(55, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('SUBMIT',**bt1)]   
+            [sg.Text('--------', size=(55, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('SUBMIT',**bt1)]
+                
             ]
 
     window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
@@ -105,7 +106,8 @@ def game():
 
     canvas = window['canvas']
 
-    ball = ball_pysim(canvas) 
+    ball = ball_pysim(canvas)
+
     #-------score-------#
     count_score = 0
 
@@ -115,9 +117,14 @@ def game():
     start = time()
     current = time()
 
-    while True:
 
-        imgbytes = None
+    imgbytes = None
+    face_x = 0
+    face_y = 0
+    face_w = 0
+    face_h = 0 
+
+    while True:
 
         #------------------- part openCV ----------------#
         ret, frame = cap.read()
@@ -131,15 +138,20 @@ def game():
 
         # Draw the rectangle around each face
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-            imgbytes = cv2.imencode('.png', frame)[1].tobytes()
-            print((x,y))
-        
-            if ball.x-ball.r < x and x < ball.x+ball.r and ball.y-ball.r < y and y < ball.y+ball.r :
-                canvas.DeleteFigure(circle)
-                ball = ball_pysim(canvas)
-                count_score += 1
-                window['score1'].update(count_score)
+            face_x = x
+            face_y = y
+            face_w = w
+            face_h = h
+            cv2.rectangle(frame, (face_x, face_y), (face_x+face_w, face_y+face_h), (255, 0, 0), 2)
+
+        imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+        print((face_x,face_y))
+    
+        if ball.is_collided(face_x, face_y) :
+            canvas.DeleteFigure(circle)
+            ball = ball_pysim(canvas)
+            count_score += 1
+            window['score1'].update(count_score)
 
         #------------------------------------------------#    
        
@@ -149,6 +161,7 @@ def game():
 
         button, values = window.read(timeout=60)
 
+         
         if button == 'Exit' :
             score()
         
@@ -161,6 +174,7 @@ def game():
             count_score += 1
             window['score1'].update(count_score)
 
+
         if timer_running: 
             current = time()
             timeleft = int(seconds - (current - start))
@@ -171,16 +185,18 @@ def game():
                 sg.popup("TIME UP")
                 score()
                 window.Close() 
-
+            
     window.close()
         
 
 def score() :
 
     layout =[
+
                 [sg.Text('ONE-TOUCH', size=(30,2), justification='center', text_color='White', font=('Franklin Gothic Book', 80, 'bold'))],
                 [sg.Text('--------', size=(40, 3), font=('Segoe UI', 14), text_color='Black'),sg.Text('SCORE : ', size=(10, 2), font=('Segoe UI', 40), text_color='White'),sg.Text('', size=(12, 2), font=('Segoe UI', 40), text_color='White', key='score2')],   
                 [sg.Text('--------', size=(60, 1), font=('Segoe UI', 14), text_color='Black'),sg.Button('RESTART',**bt2),sg.Text('--------', size=(5, 1), font=('Segoe UI', 14), text_color='Black')]
+
             ]
 
     window = sg.Window('OneTouch', layout ,auto_size_buttons=False, resizable=False).Finalize()
