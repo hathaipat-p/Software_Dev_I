@@ -1,10 +1,12 @@
+
+#------------------ ส่วน game เล่นได้แล้ว ---------------------#
+
 import pygame, sys
 from pygame.locals import *
 from ball import ball
 import cv2
-#----------------- ส่วน game  face detaction ได้แล้ว -------------------#
-#---------------  หน้าอยู่ตำแหน่งเดียวกับบอลแล้ว บอลหาย -------------------#
-#------------- ยังไม่ได้แกเกรอบสี่เหลี่ยมตอน detetct face ------------------#
+
+
 
 pygame.init()
 pygame.font.init()
@@ -21,8 +23,8 @@ text_font2 = pygame.font.Font('freesansbold.ttf', 36)
 text_font3 = pygame.font.Font('freesansbold.ttf', 20)
 
 pygame.display.set_caption('One Touch')
-#screen = pygame.display.set_mode((1280, 720) , pygame.FULLSCREEN)              # mode Fullscreen
-screen = pygame.display.set_mode((1280, 720))                                   # ไม่ fullscreen for testing
+screen = pygame.display.set_mode((1280, 720) , pygame.FULLSCREEN)              # mode Fullscreen
+#screen = pygame.display.set_mode((1280, 720))                                   # ไม่ fullscreen for testing
 surface1 = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 
 #picture bg
@@ -151,7 +153,7 @@ def game():
 
         # Draw the rectangle around each face
         for (x, y, w, h) in faces:
-            pygame.draw.rect(img, (0,255,0), (x,y,x+w, y+h), 3)  #(left,top,width,hight) 
+            #pygame.draw.rect(img, (0,255,0), (x,y,x+w//8, y+h), 3)  #(left,top,width,hight)
             print((x,y))
             center_face_x, center_face_y  = x+w//2, y+h//2
             if obj_ball.is_collided(center_face_x, center_face_y):
@@ -162,7 +164,7 @@ def game():
 
         #------------------------------------------------#
 
-        screen.blit( img , (0,0) )                                  # วางภาพที่แปลงจาก opencv แล้วใน screen pygame
+        screen.blit( img , (0,0) )                                # วางภาพที่แปลงจาก opencv แล้วใน screen pygame
 
         pygame.draw.rect(screen, black , (0,0,1280,60))
 
