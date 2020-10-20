@@ -1,12 +1,11 @@
-# -------------------------- ส่วน game ยังไม่เสร็จ -------------------------------#
-# --------------- กำลังปรับ position ball ให้ตรงกกับ detect face ----------------#
-# ---------------------- มีกรอบสีเหลี่ยมขึ้นตอน detect face ----------------------#
+# -------------------------- ส่วน game เล่นได้แล้ว -------------------------------#
+
 import cv2
 import numpy as np
 import PySimpleGUI as sg 
 from ball_pysim import *
 from time import time
-
+  
 #color in hex
 bt1 = {'size':(13,4), 'font':('Franklin Gothic Book', 20), 'button_color':("white",'#df6b77')}
 bt2 = {'size':(13,2), 'font':('Franklin Gothic Book', 20), 'button_color':("white",'#df6b77')}
@@ -113,22 +112,16 @@ def game():
 
     #-----timer--------#
     timer_running = True  
-    seconds = 34
+    seconds = 64
     start = time()
     current = time()
 
-
-    imgbytes = None
-    face_x = 0
-    face_y = 0
-    face_w = 0
-    face_h = 0 
+    face_x , face_y = 0,0
 
     while True:
 
         #------------------- part openCV ----------------#
         ret, frame = cap.read()
-        frame = cv2.resize(frame, (1280, 720))                      # ตั้งขนาดภาพเป็น 1290x720
         frame = cv2.flip(frame, 1)
 
         # Convert to grayscale
@@ -138,21 +131,20 @@ def game():
 
         # Draw the rectangle around each face
         for (x, y, w, h) in faces:
-            face_x = x
-            face_y = y
-            face_w = w
-            face_h = h
-            cv2.rectangle(frame, (face_x, face_y), (face_x+face_w, face_y+face_h), (255, 0, 0), 2)
+            face_x , face_y = x, y
+            print((x,y))
 
-        imgbytes = cv2.imencode('.png', frame)[1].tobytes()
-        print((face_x,face_y))
-    
-        if ball.is_collided(face_x, face_y) :
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+        if  ball.is_collided(face_x, face_y) :
             canvas.DeleteFigure(circle)
             ball = ball_pysim(canvas)
             count_score += 1
             window['score1'].update(count_score)
 
+
+        imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+        
         #------------------------------------------------#    
        
         canvas.DrawImage(data=imgbytes, location=(0, 400))
