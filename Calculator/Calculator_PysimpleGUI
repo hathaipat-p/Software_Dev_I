@@ -4,6 +4,7 @@
 # Student ID : 6201012620244
 # Basic calculator by PyismpleGUI
 # Date : 27-8-2020
+# ref. : https://github.com/israel-dryer/PyDataMath-II/blob/master/calculator_sg.py
 ###################################################################
 
 import  PySimpleGUI as sg
@@ -14,7 +15,7 @@ darkblue = '#2d2e65'
 yellow = '#e3e39c'
 softred = '#EF7A85'
 
-##-----DEFAULT SETTINGS----------------------------------##
+##---------------------------DEFAULT SETTINGS BUTTON----------------------------------##
 bt: dict = {'size':(7,1), 'font':('Franklin Gothic Book', 24)}
 bo: dict = {'size':(7,1), 'font':('Franklin Gothic Book', 24), 'button_color':("black","#ECA527") }
 bw: dict = { 'size':(7,1), 'font':('Franklin Gothic Book', 24), 'button_color':("#313131","#B8B8B8") }
@@ -87,5 +88,5 @@ while True :
         percent()
         
     window['output'].update(text_output)
-    
+
 window.close()
